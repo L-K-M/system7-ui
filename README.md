@@ -38,12 +38,30 @@ Import components from the package root:
 
 - `BalloonHelp`
 - `Button`
+- `Checkbox`
 - `ConfirmDialog`
+- `Dropdown`
 - `ErrorBanner`
 - `ModalDialog`
 - `MovableDialog`
 - `Notification`
+- `Radio`
 - `TitleBar`
+
+## Demo project
+
+A local demo app is included in `demo/` to preview all components.
+
+```bash
+npm run demo:install
+npm run demo:dev
+```
+
+Build the demo:
+
+```bash
+npm run demo:build
+```
 
 ## License note
 

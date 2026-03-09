@@ -11,7 +11,10 @@
   "scripts": {
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "package": "svelte-package --input src --output dist && publint",
-    "prepublishOnly": "npm run package"
+    "prepublishOnly": "npm run package",
+    "demo:install": "npm install --prefix demo",
+    "demo:dev": "npm --prefix demo run dev",
+    "demo:build": "npm --prefix demo run build"
   },
   "exports": {
     ".": {
