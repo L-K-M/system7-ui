@@ -1,0 +1,104 @@
+# @lkmc/system7-ui
+
+Reusable System 7 visual components for Svelte/Tauri apps.
+
+## Install
+
+```bash
+npm install @lkmc/system7-ui
+```
+
+For local development before publishing:
+
+```json
+{
+  "dependencies": {
+    "@lkmc/system7-ui": "file:../../system7-ui/lkmc-system7-ui-0.1.0.tgz"
+  }
+}
+```
+
+## Packaging and publish
+
+```bash
+npm install
+npm run package
+npm publish --access public
+```
+
+If your npm account enforces 2FA for publish, include an OTP:
+
+```bash
+npm publish --access public --otp=123456
+```
+
+Or use a granular access token with publish permission and 2FA bypass enabled.
+
+## Publishing updates
+
+For each new release:
+
+```bash
+# choose one
+npm version patch
+# npm version minor
+# npm version major
+
+npm run check
+npm run package
+npm publish --access public
+```
+
+This creates a git commit + tag for the version bump. Push both after publishing:
+
+```bash
+git push
+git push --tags
+```
+
+Then update consuming apps to the new package version:
+
+```bash
+npm install @lkmc/system7-ui@^<new-version>
+```
+
+For a local package archive (without publishing):
+
+```bash
+npm pack
+```
+
+This creates `lkmc-system7-ui-<version>.tgz` that consumers can install.
+
+## Usage
+
+Import the shared stylesheet once in your root layout:
+
+```ts
+import '@lkmc/system7-ui/styles.css';
+```
+
+Import components from the package root:
+
+```svelte
+<script lang="ts">
+  import { Button, TitleBar } from '@lkmc/system7-ui';
+</script>
+```
+
+## Exports
+
+- `BalloonHelp`
+- `Button`
+- `ConfirmDialog`
+- `ErrorBanner`
+- `ModalDialog`
+- `MovableDialog`
+- `Notification`
+- `TitleBar`
+
+## License note
+
+The Unlicense in this repository applies to the code authored in this package.
+
+Bundled fonts in `src/assets/fonts` are third-party assets and are not re-licensed by this repository. They keep their original licenses and terms.

@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.svelte-kit/
+coverage/
+
+# Package artifacts
+*.tgz
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Environment and local config
+.env
+.env.*
+.npmrc
+
+# Editor/OS
+.idea/
+.vscode/
+.DS_Store
