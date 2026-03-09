@@ -107,9 +107,18 @@ npm version patch
 # npm version minor
 # npm version major
 
-npm run check
-npm run package
-npm publish --access public
+npm run publish:npm
+# or, with 2FA
+# npm run publish:npm -- --otp 123456
+```
+
+The publish script runs `npm run check` and `npm run package` before publishing.
+
+Optional flags:
+
+```bash
+# only if you already ran checks/package yourself
+npm run publish:npm -- --skip-check --skip-package
 ```
 
 This creates a git commit + tag for the version bump. Push both after publishing:
