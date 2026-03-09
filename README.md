@@ -18,6 +18,39 @@ For local development before publishing:
 }
 ```
 
+## Usage
+
+Import the shared stylesheet once in your root layout:
+
+```ts
+import '@lkmc/system7-ui/styles.css';
+```
+
+Import components from the package root:
+
+```svelte
+<script lang="ts">
+  import { Button, TitleBar } from '@lkmc/system7-ui';
+</script>
+```
+
+## Exports
+
+- `BalloonHelp`
+- `Button`
+- `ConfirmDialog`
+- `ErrorBanner`
+- `ModalDialog`
+- `MovableDialog`
+- `Notification`
+- `TitleBar`
+
+## License note
+
+The Unlicense in this repository applies to the code authored in this package.
+
+Bundled fonts in `src/assets/fonts` are third-party assets and are not re-licensed by this repository. They keep their original licenses and terms.
+
 ## Packaging and publish
 
 ```bash
@@ -69,36 +102,3 @@ npm pack
 ```
 
 This creates `lkmc-system7-ui-<version>.tgz` that consumers can install.
-
-## Usage
-
-Import the shared stylesheet once in your root layout:
-
-```ts
-import '@lkmc/system7-ui/styles.css';
-```
-
-Import components from the package root:
-
-```svelte
-<script lang="ts">
-  import { Button, TitleBar } from '@lkmc/system7-ui';
-</script>
-```
-
-## Exports
-
-- `BalloonHelp`
-- `Button`
-- `ConfirmDialog`
-- `ErrorBanner`
-- `ModalDialog`
-- `MovableDialog`
-- `Notification`
-- `TitleBar`
-
-## License note
-
-The Unlicense in this repository applies to the code authored in this package.
-
-Bundled fonts in `src/assets/fonts` are third-party assets and are not re-licensed by this repository. They keep their original licenses and terms.
