@@ -41,18 +41,6 @@
     min-width: 180px;
   }
 
-  .sys7-dropdown::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 22px;
-    width: 1.5px;
-    background: #000;
-    pointer-events: none;
-    z-index: 2;
-  }
-
   .sys7-dropdown select {
     appearance: none;
     -webkit-appearance: none;

@@ -1,6 +1,6 @@
 {
   "name": "@lkmc/system7-ui",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Reusable System 7 style Svelte UI components",
   "license": "Unlicense",
   "type": "module",
@@ -12,6 +12,7 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "package": "svelte-package --input src --output dist && publint",
     "prepublishOnly": "npm run package",
+    "publish:npm": "./scripts/publish-npm.sh",
     "demo:install": "npm install --prefix demo",
     "demo:dev": "npm --prefix demo run dev",
     "demo:build": "npm --prefix demo run build"

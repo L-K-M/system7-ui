@@ -77,6 +77,18 @@ npm run package
 npm publish --access public
 ```
 
+Or use the helper script:
+
+```bash
+npm run publish:npm
+```
+
+With 2FA OTP:
+
+```bash
+npm run publish:npm -- --otp 123456
+```
+
 If your npm account enforces 2FA for publish, include an OTP:
 
 ```bash

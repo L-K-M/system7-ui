@@ -18,7 +18,21 @@
 
 <label class="sys7-radio" class:disabled>
   <input type="radio" {id} {name} {value} {disabled} checked={checked} onchange={handleChange} />
-  <span class="dot" aria-hidden="true"></span>
+  <span class="icon-wrap" aria-hidden="true">
+    <svg class="dot" viewBox="0 0 16 16" width="16" height="16" focusable="false">
+      <circle
+        cx="8"
+        cy="8"
+        r="7.25"
+        fill="#fff"
+        stroke={disabled ? '#888' : '#000'}
+        stroke-width="1.5"
+      />
+      {#if checked}
+        <circle cx="8" cy="8" r="4.5" fill={disabled ? '#888' : '#000'} />
+      {/if}
+    </svg>
+  </span>
   <span class="label-text"><slot>{label}</slot></span>
 </label>
 
@@ -39,33 +53,19 @@
     pointer-events: none;
   }
 
-  .sys7-radio .dot {
+  .sys7-radio .icon-wrap {
     width: 16px;
     height: 16px;
-    border: 1.5px solid #000;
-    border-radius: 999px;
-    background: #fff;
-    position: relative;
     flex-shrink: 0;
   }
 
-  .sys7-radio .dot::after {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: 4px;
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: #000;
-    opacity: 0;
+  .sys7-radio .dot {
+    display: block;
+    width: 16px;
+    height: 16px;
   }
 
-  .sys7-radio input:checked + .dot::after {
-    opacity: 1;
-  }
-
-  .sys7-radio input:focus + .dot {
+  .sys7-radio input:focus + .icon-wrap {
     outline: 1px dotted #000;
     outline-offset: 2px;
   }
@@ -75,11 +75,4 @@
     color: #888;
   }
 
-  .sys7-radio.disabled .dot {
-    border-color: #888;
-  }
-
-  .sys7-radio.disabled .dot::after {
-    background: #888;
-  }
 </style>
