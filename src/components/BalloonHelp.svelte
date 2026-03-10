@@ -9,6 +9,9 @@
   let balloonElement: HTMLDivElement;
   let adjustedPosition = position;
   let horizontalOffset = 0;
+  let verticalOffset = 0;
+
+  const viewportPadding = 25;
 
   let pointerFillPath = '';
   let pointerLeftPath = '';
@@ -19,7 +22,6 @@
       showBalloon = true;
       requestAnimationFrame(() => {
         adjustBalloonPosition();
-        updatePointerPath();
       });
     }, delay);
   }
@@ -31,7 +33,18 @@
     }
     showBalloon = false;
     horizontalOffset = 0;
+    verticalOffset = 0;
     adjustedPosition = position;
+  }
+
+  function handleWindowResize() {
+    if (!showBalloon) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      adjustBalloonPosition();
+    });
   }
 
   function adjustBalloonPosition() {
@@ -40,10 +53,11 @@
     }
 
     const balloonRect = balloonElement.getBoundingClientRect();
-    const padding = 25;
+    const padding = viewportPadding;
 
     adjustedPosition = position;
     horizontalOffset = 0;
+    verticalOffset = 0;
 
     if (position === 'bottom' && balloonRect.bottom > window.innerHeight - padding) {
       adjustedPosition = 'top';
@@ -64,7 +78,15 @@
         horizontalOffset = window.innerWidth - padding - newBalloonRect.right;
       }
 
-      updatePointerPath();
+      if (newBalloonRect.top < padding) {
+        verticalOffset = padding - newBalloonRect.top;
+      } else if (newBalloonRect.bottom > window.innerHeight - padding) {
+        verticalOffset = window.innerHeight - padding - newBalloonRect.bottom;
+      }
+
+      requestAnimationFrame(() => {
+        updatePointerPath();
+      });
     });
   }
 
@@ -106,6 +128,8 @@
   }
 </script>
 
+<svelte:window on:resize={handleWindowResize} />
+
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   class="balloon-container"
@@ -123,7 +147,7 @@
     <div
       class="balloon {adjustedPosition}"
       bind:this={balloonElement}
-      style="transform: translateX(calc(-50% + {horizontalOffset}px));"
+      style="transform: translateX(calc(-50% + {horizontalOffset}px)) translateY({verticalOffset}px);"
     >
       <div class="balloon-content">{message}</div>
     </div>
@@ -152,15 +176,23 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    white-space: nowrap;
     z-index: 10000;
     pointer-events: none;
     animation: fadeIn 0.2s ease-in;
     border-radius: 10px;
     border: 2px solid #000;
     padding: 15px;
+    box-sizing: border-box;
+    max-width: min(420px, calc(100vw - 50px));
+    max-height: calc(100vh - 50px);
+    overflow: auto;
     background-color: #fff;
     box-shadow: 2px 2px 0 rgba(0, 0, 0, 1);
+  }
+
+  .balloon-content {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 
   .balloon.bottom {
