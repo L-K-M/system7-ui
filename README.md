@@ -2,6 +2,8 @@
 
 Reusable System 7 visual components for Svelte/Tauri apps.
 
+![Preview of components](./screenshot.png)
+
 ## Install
 
 ```bash
