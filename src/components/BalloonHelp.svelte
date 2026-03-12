@@ -193,6 +193,7 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    width: max-content;
     z-index: 10000;
     pointer-events: none;
     animation: fadeIn 0.2s ease-in;
@@ -200,7 +201,7 @@
     border: 2px solid #000;
     padding: 15px;
     box-sizing: border-box;
-    max-width: min(420px, calc(100vw - 50px));
+    max-width: min(64ch, calc(100vw - 50px));
     max-height: calc(100vh - 50px);
     overflow: auto;
     background-color: #fff;
@@ -209,7 +210,7 @@
 
   .balloon-content {
     white-space: pre-wrap;
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
   }
 
   .balloon-content.markdown-content {

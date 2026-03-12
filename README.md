@@ -110,6 +110,7 @@ Bundled fonts in `src/assets/fonts` are third-party assets and are not re-licens
 ```bash
 npm install
 npm run package
+npm login --scope=@lkmc --registry=https://registry.npmjs.org/
 npm publish --access public
 ```
 
