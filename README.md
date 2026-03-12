@@ -50,6 +50,40 @@ Import components from the package root:
 - `Radio`
 - `TitleBar`
 
+## BalloonHelp
+
+`BalloonHelp` wraps any element and shows hover help text.
+
+```svelte
+<script lang="ts">
+  import { BalloonHelp, Button } from '@lkmc/system7-ui';
+
+  const helpMessage = [
+    '**Scan profile tips**',
+    '',
+    '- Quick: common ports',
+    '- Deep: larger scan range',
+    '- Use `Auto refresh` for live updates'
+  ].join('\n');
+</script>
+
+<BalloonHelp markdown message={helpMessage} position="bottom" delay={600}>
+  <Button>Hover for help</Button>
+</BalloonHelp>
+```
+
+Props:
+
+- `message` (`string`): Balloon text content.
+- `position` (`'top' | 'bottom'`, default `bottom`): Preferred side of the anchor element.
+- `delay` (`number`, default `1000`): Hover delay in milliseconds before showing.
+- `markdown` (`boolean`, default `false`): Renders `message` as Markdown (raw HTML input is disabled).
+
+Behavior notes:
+
+- Automatically repositions to stay within the viewport bounds.
+- Constrains width/height and wraps long text to avoid screen overflow.
+
 ## Demo project
 
 A local demo app is included in `demo/` to preview all components.

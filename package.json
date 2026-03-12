@@ -43,9 +43,13 @@
     "@sveltejs/kit": "^2.9.0",
     "@sveltejs/package": "^2.5.0",
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
+    "@types/markdown-it": "^14.1.2",
     "publint": "^0.2.12",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
     "typescript": "~5.6.2"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.1"
   }
 }

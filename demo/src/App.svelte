@@ -32,6 +32,14 @@
     { value: 'deep', label: 'Deep' }
   ];
 
+  const markdownBalloonMessage = [
+    '**Markdown bubble help**',
+    '',
+    '- Use lists for quick guidance',
+    '- Add links like https://example.com',
+    '- Highlight `inline code` snippets'
+  ].join('\n');
+
   function addNotification(type) {
     const label = type[0].toUpperCase() + type.slice(1);
     const id = notificationId++;
@@ -66,6 +74,9 @@
           </BalloonHelp>
           <BalloonHelp message="You can wrap labels, text, or icons too.">
             <span class="hint-chip">Hover this text</span>
+          </BalloonHelp>
+          <BalloonHelp markdown message={markdownBalloonMessage}>
+            <span class="hint-chip">Hover markdown help</span>
           </BalloonHelp>
         </div>
       </section>

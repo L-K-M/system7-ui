@@ -1,7 +1,16 @@
 <script lang="ts">
+  import MarkdownIt from 'markdown-it';
+
   export let message = '';
   export let position = 'bottom';
   export let delay = 1000;
+  export let markdown = false;
+
+  const markdownParser = new MarkdownIt({
+    html: false,
+    linkify: true,
+    breaks: true
+  });
 
   let showBalloon = false;
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -16,6 +25,10 @@
   let pointerFillPath = '';
   let pointerLeftPath = '';
   let pointerRightPath = '';
+
+  function renderMarkdown(text: string) {
+    return markdownParser.render(text);
+  }
 
   function handleMouseEnter() {
     timeoutId = setTimeout(() => {
@@ -149,7 +162,11 @@
       bind:this={balloonElement}
       style="transform: translateX(calc(-50% + {horizontalOffset}px)) translateY({verticalOffset}px);"
     >
-      <div class="balloon-content">{message}</div>
+      {#if markdown}
+        <div class="balloon-content markdown-content">{@html renderMarkdown(message)}</div>
+      {:else}
+        <div class="balloon-content">{message}</div>
+      {/if}
     </div>
   {/if}
 </div>
@@ -193,6 +210,28 @@
   .balloon-content {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+  }
+
+  .balloon-content.markdown-content {
+    white-space: normal;
+  }
+
+  .balloon-content.markdown-content :global(p) {
+    margin: 0;
+  }
+
+  .balloon-content.markdown-content :global(p + p) {
+    margin-top: 0.5em;
+  }
+
+  .balloon-content.markdown-content :global(ul),
+  .balloon-content.markdown-content :global(ol) {
+    margin: 0.4em 0;
+    padding-left: 1.2em;
+  }
+
+  .balloon-content.markdown-content :global(code) {
+    font-family: 'Monaco', 'Andale Mono', 'Courier New', monospace;
   }
 
   .balloon.bottom {
