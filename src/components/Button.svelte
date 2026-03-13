@@ -44,7 +44,6 @@
   }
 
   .sys7-btn:active:not(:disabled) {
-    transform: translate(1px, 1px);
     background: #000;
     color: #fff;
   }
@@ -68,7 +67,6 @@
 
   .icon-btn:active {
     opacity: 0.5;
-    transform: none !important;
   }
 
   .icon-btn :global(img) {

@@ -10,6 +10,7 @@ export { default as ErrorBanner } from './components/ErrorBanner.svelte';
 export { default as ModalDialog } from './components/ModalDialog.svelte';
 export { default as MovableDialog } from './components/MovableDialog.svelte';
 export { default as Notification } from './components/Notification.svelte';
+export { default as ProgressBar } from './components/ProgressBar.svelte';
 export { default as Radio } from './components/Radio.svelte';
 export { default as TitleBar } from './components/TitleBar.svelte';
 export { default as TrashIcon } from './components/TrashIcon.svelte';

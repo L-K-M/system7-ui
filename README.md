@@ -50,6 +50,7 @@ Import components from the package root:
 - `ModalDialog`
 - `MovableDialog`
 - `Notification`
+- `ProgressBar`
 - `Radio`
 - `TitleBar`
 - `TrashIcon`

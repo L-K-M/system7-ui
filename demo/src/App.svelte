@@ -13,6 +13,7 @@
     ModalDialog,
     MovableDialog,
     Notification,
+    ProgressBar,
     Radio,
     TitleBar,
     TrashIcon
@@ -24,6 +25,7 @@
   let scanScope = 'lan';
   let notifications = [];
   let notificationId = 1;
+  let installProgress = 78;
 
   let showError = false;
   let showModal = false;
@@ -51,6 +53,10 @@
     setTimeout(() => {
       notifications = notifications.filter((item) => item.id !== id);
     }, 2500);
+  }
+
+  function bumpProgress(delta) {
+    installProgress = Math.min(100, Math.max(0, installProgress + delta));
   }
 </script>
 
@@ -157,6 +163,24 @@
             onchange={() => (scanScope = 'subnet')}
             >Current subnet</Radio
           >
+        </div>
+      </section>
+
+      <section class="panel">
+        <h3>ProgressBar</h3>
+        <div class="progress-preview">
+          <ProgressBar
+            value={installProgress}
+            title={`Save progress: ${installProgress}%`}
+            ariaLabel="Save progress"
+          />
+        </div>
+        <div class="row progress-controls">
+          <Button onclick={() => bumpProgress(-10)}>-10%</Button>
+          <Button onclick={() => bumpProgress(10)}>+10%</Button>
+          <Button onclick={() => (installProgress = 0)}>Reset</Button>
+          <Button onclick={() => (installProgress = 100)}>Complete</Button>
+          <span class="progress-value">{installProgress}%</span>
         </div>
       </section>
 
@@ -283,6 +307,21 @@
     border: 1px solid #000;
     background: #fff;
     padding: 2px 8px 1px;
+  }
+
+  .progress-preview {
+    width: min(520px, 100%);
+    margin-bottom: 10px;
+  }
+
+  .progress-controls {
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  .progress-value {
+    min-width: 62px;
+    text-align: right;
   }
 
   .dialog-copy {
