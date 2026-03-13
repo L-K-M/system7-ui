@@ -5,13 +5,17 @@
     Button,
     Checkbox,
     ConfirmDialog,
+    CopyIcon,
+    DownloadIcon,
     Dropdown,
+    EditIcon,
     ErrorBanner,
     ModalDialog,
     MovableDialog,
     Notification,
     Radio,
-    TitleBar
+    TitleBar,
+    TrashIcon
   } from '@lkmc/system7-ui';
 
   let selectedProfile = 'quick';
@@ -63,6 +67,38 @@
           <Button>Default</Button>
           <Button variant="primary">Primary</Button>
           <Button disabled>Disabled</Button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h3>Icons</h3>
+        <div class="row">
+          <BalloonHelp message="Save icon">
+            <Button variant="icon" title="Save">
+              <DownloadIcon />
+            </Button>
+          </BalloonHelp>
+          <BalloonHelp message="Edit icon">
+            <Button variant="icon" title="Edit">
+              <EditIcon />
+            </Button>
+          </BalloonHelp>
+          <BalloonHelp message="Trash icon">
+            <Button variant="icon" title="Trash">
+              <TrashIcon />
+            </Button>
+          </BalloonHelp>
+          <BalloonHelp message="Copy icon">
+            <Button variant="icon" title="Copy">
+              <CopyIcon />
+            </Button>
+          </BalloonHelp>
+        </div>
+        <div class="row icon-row">
+          <span class="icon-chip"><DownloadIcon />Save</span>
+          <span class="icon-chip"><EditIcon />Edit</span>
+          <span class="icon-chip"><TrashIcon />Trash</span>
+          <span class="icon-chip"><CopyIcon />Copy</span>
         </div>
       </section>
 
@@ -234,6 +270,19 @@
     padding: 4px 8px 2px;
     background: #fff;
     cursor: default;
+  }
+
+  .icon-row {
+    margin-bottom: 0;
+  }
+
+  .icon-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #000;
+    background: #fff;
+    padding: 2px 8px 1px;
   }
 
   .dialog-copy {

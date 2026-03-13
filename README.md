@@ -42,13 +42,17 @@ Import components from the package root:
 - `Button`
 - `Checkbox`
 - `ConfirmDialog`
+- `CopyIcon`
+- `DownloadIcon`
 - `Dropdown`
+- `EditIcon`
 - `ErrorBanner`
 - `ModalDialog`
 - `MovableDialog`
 - `Notification`
 - `Radio`
 - `TitleBar`
+- `TrashIcon`
 
 ## BalloonHelp
 
