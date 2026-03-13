@@ -21,7 +21,7 @@
   style={`height: ${height}px;`}
 >
   <div class="fill"
-       style={`width: ${percent}%;height: ${height-3}px;`}
+       style={`width: ${percent}%;`}
   >
   </div>
 </div>

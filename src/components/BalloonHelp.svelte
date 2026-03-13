@@ -22,6 +22,10 @@
 
   const viewportPadding = 25;
 
+  function clamp(value: number, min: number, max: number) {
+    return Math.min(Math.max(value, min), max);
+  }
+
   let pointerFillPath = '';
   let pointerLeftPath = '';
   let pointerRightPath = '';
@@ -114,20 +118,28 @@
     const anchorX = containerRect.width / 2;
     const anchorY = adjustedPosition === 'bottom' ? containerRect.height : 0;
 
-    const connectionX = balloonRect.left + balloonRect.width / 2 - containerRect.left;
-    const connectionY =
+    const balloonLeft = balloonRect.left - containerRect.left;
+    const balloonRight = balloonRect.right - containerRect.left;
+    const balloonCenter = (balloonLeft + balloonRight) / 2;
+    const borderOverlap = 3;
+    const connectionYBase =
       adjustedPosition === 'bottom'
-        ? balloonRect.top - containerRect.top + 2
-        : balloonRect.top - containerRect.top + balloonRect.height - 2;
+        ? balloonRect.top - containerRect.top + borderOverlap
+        : balloonRect.top - containerRect.top + balloonRect.height - borderOverlap;
+    const connectionY = Math.round(connectionYBase);
 
     const pointerWidth = 8;
-    let xOffset = -30;
-    if (balloonRect.left < 200) {
-      xOffset = 30;
-    }
+    const pointerInset = 14;
+    const pointerBias = anchorX < balloonCenter ? 16 : -16;
+    const minConnectionX = balloonLeft + pointerInset + pointerWidth;
+    const maxConnectionX = balloonRight - pointerInset - pointerWidth;
+    const connectionCenterX =
+      minConnectionX > maxConnectionX
+        ? (balloonLeft + balloonRight) / 2
+        : clamp(anchorX + pointerBias, minConnectionX, maxConnectionX);
 
-    const leftX = connectionX - pointerWidth + xOffset;
-    const rightX = connectionX + pointerWidth + xOffset;
+    const leftX = connectionCenterX - pointerWidth;
+    const rightX = connectionCenterX + pointerWidth;
 
     pointerFillPath = `
       M ${anchorX} ${anchorY}
