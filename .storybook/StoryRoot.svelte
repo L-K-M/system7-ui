@@ -1,9 +1,20 @@
 <script lang="ts">
-  export let Story: any;
+  type StoryLike = {
+    Component?: any;
+    props?: Record<string, unknown>;
+  };
+
+  export let storyFn: (() => StoryLike) | undefined = undefined;
+
+  let story: StoryLike = {};
+
+  $: story = storyFn ? storyFn() : {};
 </script>
 
 <div class="s7-root story-root">
-  <svelte:component this={Story} />
+  {#if story.Component}
+    <svelte:component this={story.Component} {...story.props ?? {}} />
+  {/if}
 </div>
 
 <style>

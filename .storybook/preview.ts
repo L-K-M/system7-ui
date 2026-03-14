@@ -6,7 +6,7 @@ const preview: Preview = {
   decorators: [
     (Story) => ({
       Component: StoryRoot,
-      props: { Story }
+      props: { storyFn: Story }
     })
   ],
   parameters: {

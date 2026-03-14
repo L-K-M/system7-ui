@@ -57,6 +57,7 @@ Import components from the package root:
 - `EditIcon`
 - `ErrorBoundary`
 - `ErrorBanner`
+- `ExpandableSection`
 - `ModalDialog`
 - `MovableDialog`
 - `Notification`
@@ -177,6 +178,21 @@ Slots:
 
 - `default`: protected content block
 
+## ExpandableSection
+
+`ExpandableSection` provides a System 7-style disclosure row with an SVG triangle and collapsible content.
+
+Props:
+
+- `label` (`string`, default `''`)
+- `expanded` (`boolean`, default `false`)
+- `disabled` (`boolean`, default `false`)
+- `onchange` (`(expanded: boolean) => void`)
+
+Slots:
+
+- `default`: content shown when expanded
+
 ## Demo project
 
 A local demo app is included in `demo/` to preview all components.
@@ -196,16 +212,33 @@ Reference documentation is also available in `docs/COMPONENTS.md`.
 
 ## Storybook
 
-Storybook is included for interactive component documentation and accessibility checks.
+Storybook is included for interactive component documentation, controls, and accessibility checks.
+
+Start Storybook in development mode:
 
 ```bash
 npm run storybook
 ```
 
+Open `http://localhost:6006` to browse stories.
+
 Build static Storybook docs:
 
 ```bash
 npm run storybook:build
+```
+
+Storybook notes:
+
+- Stories live in `stories/*.stories.ts`.
+- Fixture wrappers for dialog/slot-heavy components live in `stories/fixtures/`.
+- Global System 7 styling is applied through `.storybook/preview.ts` and `.storybook/StoryRoot.svelte`.
+- The a11y addon is enabled so you can run accessibility checks per story from the Storybook UI.
+
+To preview the generated static docs locally after build:
+
+```bash
+npx serve storybook-static
 ```
 
 ## License note
