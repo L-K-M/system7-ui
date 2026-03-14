@@ -20,10 +20,7 @@
   aria-valuenow={Math.round(clampedValue)}
   style={`height: ${height}px;`}
 >
-  <div class="fill"
-       style={`width: ${percent}%;`}
-  >
-  </div>
+  <div class="fill" style={`width: ${percent}%;`}></div>
 </div>
 
 <style>

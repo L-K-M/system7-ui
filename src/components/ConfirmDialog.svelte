@@ -3,10 +3,19 @@
   import Button from './Button.svelte';
   import ModalDialog from './ModalDialog.svelte';
 
+  /** Main confirmation prompt shown in the dialog body. */
   export let message = '';
+
+  /** Label for the primary confirmation button. */
   export let okText = 'OK';
+
+  /** Label for the secondary cancel button. */
   export let cancelText = 'Cancel';
+
+  /** Callback fired when the confirm button is clicked. */
   export let onconfirm: (() => void) | undefined = undefined;
+
+  /** Callback fired when the cancel button/backdrop is clicked. */
   export let oncancel: (() => void) | undefined = undefined;
 
   function handleOk() {

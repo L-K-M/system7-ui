@@ -1,9 +1,16 @@
 <script lang="ts">
   import MarkdownIt from 'markdown-it';
 
+  /** Tooltip content shown when hovering the wrapped element. */
   export let message = '';
+
+  /** Preferred tooltip side relative to the wrapped element. */
   export let position: 'top' | 'bottom' = 'bottom';
+
+  /** Delay in milliseconds before the tooltip appears on hover. */
   export let delay = 1000;
+
+  /** Enables Markdown rendering for `message` when `true`. */
   export let markdown = false;
 
   const markdownParser = new MarkdownIt({
@@ -30,8 +37,22 @@
   let pointerLeftPath = '';
   let pointerRightPath = '';
 
+  function escapeHtml(text: string) {
+    return text
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+
   function renderMarkdown(text: string) {
-    return markdownParser.render(text);
+    try {
+      return markdownParser.render(text);
+    } catch (error) {
+      console.error('BalloonHelp markdown render failed', error);
+      return `<p>${escapeHtml(text)}</p>`;
+    }
   }
 
   function handleMouseEnter() {
@@ -162,6 +183,7 @@
   on:mouseenter={handleMouseEnter}
   on:mouseleave={handleMouseLeave}
 >
+  <!-- @slot default - Trigger element that shows help text on hover. -->
   <slot />
   {#if showBalloon && message}
     <svg class="pointer-svg" aria-hidden="true">

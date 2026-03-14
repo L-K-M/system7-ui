@@ -18,51 +18,43 @@
   font-style: normal;
 }
 
-* {
+.s7-root,
+.s7-root * {
   font-family: 'Geneva', 'Verdana', 'Helvetica', sans-serif !important;
   font-size: 24px;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-button,
 .sys7-btn,
-label,
-.dialog-text {
+.sys7-checkbox,
+.sys7-checkbox .label-text,
+.sys7-radio,
+.sys7-radio .label-text,
+.sys7-dropdown select,
+.dialog-text,
+.s7-root h1,
+.s7-root h2,
+.s7-root h3,
+.s7-root h4,
+.s7-root h5,
+.s7-root h6 {
   font-family: 'Sysfont', 'Chicago', 'Impact', sans-serif !important;
   letter-spacing: 1px;
   font-size: 18px;
-  font-feature-settings: 'liga' off, 'clig' off, 'calt' off;
+  font-feature-settings:
+    'liga' off,
+    'clig' off,
+    'calt' off;
   font-weight: 400;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  overflow: hidden;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-html,
-body {
-  overflow: hidden;
-  margin: 0 !important;
-}
-
-.form-group {
+.s7-form-group {
   margin-bottom: 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-input {
+.s7-input {
   padding: 4px 6px;
   border: 1px solid #000;
   font-family: inherit;
@@ -70,21 +62,21 @@ input {
   background: #fff;
 }
 
-input.error {
+.s7-input.error {
   border: 2px solid #000;
 }
 
-.error-msg {
+.s7-error-msg {
   color: #000;
   font-style: italic;
 }
 
-::-webkit-scrollbar {
+.s7-root ::-webkit-scrollbar {
   width: 16px;
   height: 16px;
 }
 
-::-webkit-scrollbar-track {
+.s7-root ::-webkit-scrollbar-track {
   background-image: url('../assets/scrollbar.png');
   background-size: 170%;
   background-repeat: repeat-y;
@@ -92,7 +84,7 @@ input.error {
   image-rendering: pixelated;
 }
 
-::-webkit-scrollbar-thumb {
+.s7-root ::-webkit-scrollbar-thumb {
   background: #ccccff;
   border: 1px solid #000;
   border-top-color: #333366;
@@ -104,37 +96,24 @@ input.error {
   background-size: 60%;
 }
 
-::-webkit-scrollbar-thumb:hover {
+.s7-root ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(80, 80, 80, 0.8);
 }
 
-.window-unfocused ::-webkit-scrollbar-track {
+.s7-root .window-unfocused ::-webkit-scrollbar-track {
   background-image: none;
   background-color: #fff;
 }
 
-.window-unfocused ::-webkit-scrollbar-thumb {
+.s7-root .window-unfocused ::-webkit-scrollbar-thumb {
   background-image: none;
   background-color: #fff;
   border-color: #fff;
   box-shadow: none;
 }
 
-.backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: var(--system7-z-dialog);
-}
-
-.window-frame,
-.dialog {
+.s7-window-frame,
+.s7-dialog {
   background: #fff;
   border: 1px solid #000;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
@@ -142,11 +121,11 @@ input.error {
   flex-direction: column;
 }
 
-.dialog {
+.s7-dialog {
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
-.actions {
+.s7-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;

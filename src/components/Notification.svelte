@@ -1,7 +1,11 @@
 <script lang="ts">
   import MarkdownIt from 'markdown-it';
 
-  export let notifications: { id: number; message: string; type: 'success' | 'error' | 'info' }[] = [];
+  /** Active notification items rendered in a stacked list. */
+  export let notifications: { id: number; message: string; type: 'success' | 'error' | 'info' }[] =
+    [];
+
+  /** Enables Markdown rendering for each notification message when `true`. */
   export let markdown = false;
 
   const markdownParser = new MarkdownIt({
@@ -10,14 +14,28 @@
     breaks: true
   });
 
+  function escapeHtml(text: string) {
+    return text
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+
   function renderMarkdown(text: string) {
-    return markdownParser.render(text);
+    try {
+      return markdownParser.render(text);
+    } catch (error) {
+      console.error('Notification markdown render failed', error);
+      return `<p>${escapeHtml(text)}</p>`;
+    }
   }
 </script>
 
 {#each notifications as notification (notification.id)}
   <div
-    class="notification notification-{notification.type}"
+    class="notification {notification.type}"
     style="bottom: {20 + notifications.indexOf(notification) * 70}px;"
     role="alert"
     aria-live="polite"

@@ -5,6 +5,7 @@ node_modules/
 dist/
 .svelte-kit/
 coverage/
+storybook-static/
 
 # Package artifacts
 *.tgz

@@ -1,19 +1,38 @@
 <script lang="ts">
-  export let variant = 'default';
+  type ButtonVariant = 'default' | 'primary' | 'icon';
+
+  /**
+   * Visual style variant.
+   *
+   * - `default`: standard button
+   * - `primary`: emphasized action with outer border
+   * - `icon`: icon-only button
+   */
+  export let variant: ButtonVariant = 'default';
+
+  /** Whether the button is disabled. */
   export let disabled = false;
+
+  /** Native button type attribute. */
   export let type: 'button' | 'submit' | 'reset' = 'button';
+
+  /** Tooltip text shown by the browser on hover. */
   export let title = '';
+
+  /** Click handler called when the button is activated. */
   export let onclick: ((e: MouseEvent) => void) | undefined = undefined;
 </script>
 
 {#if variant === 'primary'}
-  <div class="primary-border" class:disabled={disabled}>
+  <div class="primary-border" class:disabled>
     <button class="sys7-btn" {disabled} {title} {type} {onclick}>
+      <!-- @slot default - Button label text or icon content. -->
       <slot />
     </button>
   </div>
 {:else}
   <button class="sys7-btn" class:icon-btn={variant === 'icon'} {disabled} {title} {type} {onclick}>
+    <!-- @slot default - Button label text or icon content. -->
     <slot />
   </button>
 {/if}

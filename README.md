@@ -28,6 +28,14 @@ Import the shared stylesheet once in your root layout:
 import '@lkmc/system7-ui/styles.css';
 ```
 
+Wrap the section that uses these components with `.s7-root` to apply System 7 typography and scrollbar styling without leaking into the entire host app:
+
+```svelte
+<div class="s7-root">
+  <!-- system7-ui components -->
+</div>
+```
+
 Import components from the package root:
 
 ```svelte
@@ -41,11 +49,13 @@ Import components from the package root:
 - `BalloonHelp`
 - `Button`
 - `Checkbox`
+- `CloseIcon`
 - `ConfirmDialog`
 - `CopyIcon`
 - `DownloadIcon`
 - `Dropdown`
 - `EditIcon`
+- `ErrorBoundary`
 - `ErrorBanner`
 - `ModalDialog`
 - `MovableDialog`
@@ -54,6 +64,19 @@ Import components from the package root:
 - `Radio`
 - `TitleBar`
 - `TrashIcon`
+
+### Type Exports
+
+Each component now includes an explicit `*Props` type export from the package entrypoint.
+
+```ts
+import type {
+  ButtonProps,
+  CheckboxProps,
+  ModalDialogProps,
+  MovableDialogProps
+} from '@lkmc/system7-ui';
+```
 
 ## BalloonHelp
 
@@ -89,6 +112,71 @@ Behavior notes:
 - Automatically repositions to stay within the viewport bounds.
 - Constrains width/height and wraps long text to avoid screen overflow.
 
+## Button
+
+`Button` supports three variants and a default slot for label/icon content.
+
+Props:
+
+- `variant` (`'default' | 'primary' | 'icon'`, default `default`)
+- `disabled` (`boolean`, default `false`)
+- `type` (`'button' | 'submit' | 'reset'`, default `button`)
+- `title` (`string`, default `''`)
+- `onclick` (`(e: MouseEvent) => void`)
+
+Slots:
+
+- `default`: button content (text or icon)
+
+## Checkbox
+
+`Checkbox` supports either a `label` prop fallback or slotted label content.
+
+Props:
+
+- `checked` (`boolean`, default `false`)
+- `disabled` (`boolean`, default `false`)
+- `id` (`string`, default `''`)
+- `name` (`string`, default `''`)
+- `value` (`string`, default `'on'`)
+- `label` (`string`, default `''`)
+- `onchange` (`(checked: boolean, e: Event) => void`)
+
+Slots:
+
+- `default`: label content shown to the right of the checkbox icon
+
+## Radio
+
+`Radio` supports either a `label` prop fallback or slotted label content.
+
+Props:
+
+- `checked` (`boolean`, default `false`)
+- `disabled` (`boolean`, default `false`)
+- `id` (`string`, default `''`)
+- `name` (`string`, default `''`)
+- `value` (`string`, default `''`)
+- `label` (`string`, default `''`)
+- `onchange` (`(value: string, e: Event) => void`)
+
+Slots:
+
+- `default`: label content shown to the right of the radio icon
+
+## ErrorBoundary
+
+`ErrorBoundary` catches child rendering errors and displays a retry fallback.
+
+Props:
+
+- `fallbackMessage` (`string`, default `'Something went wrong while rendering this view.'`)
+- `onerror` (`(error: unknown) => void`)
+
+Slots:
+
+- `default`: protected content block
+
 ## Demo project
 
 A local demo app is included in `demo/` to preview all components.
@@ -102,6 +190,22 @@ Build the demo:
 
 ```bash
 npm run demo:build
+```
+
+Reference documentation is also available in `docs/COMPONENTS.md`.
+
+## Storybook
+
+Storybook is included for interactive component documentation and accessibility checks.
+
+```bash
+npm run storybook
+```
+
+Build static Storybook docs:
+
+```bash
+npm run storybook:build
 ```
 
 ## License note

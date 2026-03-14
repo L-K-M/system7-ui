@@ -5,12 +5,25 @@
     disabled?: boolean;
   }
 
+  /** Select options shown in the dropdown list. */
   export let options: DropdownOption[] = [];
+
+  /** Currently selected option value. Supports two-way binding with `bind:value`. */
   export let value = '';
+
+  /** Disables the select when `true`. */
   export let disabled = false;
+
+  /** Optional id passed to the underlying select element. */
   export let id = '';
+
+  /** Optional name used for form submissions. */
   export let name = '';
+
+  /** Tooltip text shown by the browser on hover. */
   export let title = '';
+
+  /** Change callback fired after a new option is selected. */
   export let onchange: ((value: string, e: Event) => void) | undefined = undefined;
 
   function handleChange(e: Event) {
@@ -24,7 +37,7 @@
 
 <div class="sys7-dropdown" class:disabled>
   <select {id} {name} {title} {disabled} bind:value onchange={handleChange}>
-    {#each options as option}
+    {#each options as option (option.value)}
       <option value={option.value} disabled={option.disabled}>{option.label}</option>
     {/each}
   </select>

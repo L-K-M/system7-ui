@@ -23,7 +23,9 @@
   let autoRefresh = $state(true);
   let includeOffline = $state(false);
   let scanScope = $state('lan');
-  let notifications = $state<{ id: number; message: string; type: 'success' | 'error' | 'info' }[]>([]);
+  let notifications = $state<{ id: number; message: string; type: 'success' | 'error' | 'info' }[]>(
+    []
+  );
   let notificationId = $state(1);
   let installProgress = $state(78);
 
@@ -60,10 +62,10 @@
   }
 </script>
 
-<div class="desktop">
+<div class="desktop s7-root">
   <Notification {notifications} markdown />
 
-  <div class="window-frame demo-window">
+  <div class="s7-window-frame demo-window">
     <TitleBar title="System 7 UI Components" closable shadeable />
 
     <main class="content">
@@ -153,15 +155,13 @@
             name="scope"
             value="lan"
             checked={scanScope === 'lan'}
-            onchange={() => (scanScope = 'lan')}
-            >LAN only</Radio
+            onchange={() => (scanScope = 'lan')}>LAN only</Radio
           >
           <Radio
             name="scope"
             value="subnet"
             checked={scanScope === 'subnet'}
-            onchange={() => (scanScope = 'subnet')}
-            >Current subnet</Radio
+            onchange={() => (scanScope = 'subnet')}>Current subnet</Radio
           >
         </div>
       </section>
@@ -187,7 +187,9 @@
       <section class="panel">
         <h3>Dialogs, Banners, Notifications</h3>
         <div class="row">
-          <Button onclick={() => (showError = !showError)}>{showError ? 'Hide' : 'Show'} Error Banner</Button>
+          <Button onclick={() => (showError = !showError)}
+            >{showError ? 'Hide' : 'Show'} Error Banner</Button
+          >
           <Button onclick={() => (showModal = true)}>Show ModalDialog</Button>
           <Button onclick={() => (showMovable = true)}>Show MovableDialog</Button>
           <Button onclick={() => (showConfirm = true)}>Show ConfirmDialog</Button>

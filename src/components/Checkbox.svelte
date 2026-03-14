@@ -1,10 +1,26 @@
 <script lang="ts">
+  /** Current checked state. Supports two-way binding with `bind:checked`. */
   export let checked = false;
+
+  /** Disables the input and visual interaction when `true`. */
   export let disabled = false;
+
+  /** Optional id passed to the underlying input element. */
   export let id = '';
+
+  /** Optional name for form submission/grouping. */
   export let name = '';
+
+  /** Submitted value when checked in a native form post. */
   export let value = 'on';
+
+  /** Fallback label text used when no slot content is provided. */
   export let label = '';
+
+  /**
+   * Change callback fired after the checked state updates.
+   * Receives the new checked value and original DOM event.
+   */
   export let onchange: ((checked: boolean, e: Event) => void) | undefined = undefined;
 
   function handleChange(e: Event) {
@@ -51,7 +67,10 @@
       {/if}
     </svg>
   </span>
-  <span class="label-text"><slot>{label}</slot></span>
+  <span class="label-text">
+    <!-- @slot default - Label content rendered to the right of the checkbox. -->
+    <slot>{label}</slot>
+  </span>
 </label>
 
 <style>
@@ -92,5 +111,4 @@
     cursor: default;
     color: #888;
   }
-
 </style>

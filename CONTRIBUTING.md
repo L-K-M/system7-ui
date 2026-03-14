@@ -6,18 +6,67 @@ This is a living document and should be updated as necessary.
 
 ---
 
+## Development Setup
+
+```bash
+npm install
+npm run demo:install
+```
+
+Run local checks before opening a pull request:
+
+```bash
+npm run check
+npm run lint
+npm run test
+npm run package
+```
+
+Optional docs preview:
+
+```bash
+npm run storybook
+```
+
+---
+
+## Code Style Requirements
+
+- ESLint is configured with TypeScript + Svelte support via `eslint.config.js`.
+- Prettier is configured via `.prettierrc` and should be used for formatting.
+- Keep CSS scoped and avoid adding broad global selectors.
+
+---
+
+## Testing Requirements
+
+- Add or update tests for behavior changes in `src/components/__tests__/`.
+- Keep coverage at or above the configured threshold for core components.
+- Use `npm run test:coverage` when validating larger changes.
+
+---
+
+## Pull Request Process
+
+1. Create a branch from the latest `main`.
+2. Ensure checks pass locally (`check`, `lint`, `test`, `package`).
+3. Include a concise summary of user-visible changes and screenshots when UI changes are involved.
+4. Link related issues and call out follow-up work, if any.
+
+---
+
 ## Security
 
 ### Never use `@html` with unsanitized content
 
 ```svelte
-<!-- BAD: XSS vulnerability -->
-<p>{@html userInput}</p>
-
 <!-- GOOD: Use markdown-it with html: false -->
 <script>
   const md = new MarkdownIt({ html: false, linkify: true, breaks: true });
 </script>
+
+<!-- BAD: XSS vulnerability -->
+<p>{@html userInput}</p>
 <p>{@html md.render(content)}</p>
 
 <!-- BEST: Use plain text when possible -->
@@ -61,12 +110,7 @@ Every element with `onclick` must have a corresponding `onkeydown` handler:
 <div onclick={close}>Close</div>
 
 <!-- GOOD: Semantic with ARIA -->
-<button
-  onclick={close}
-  aria-label="Close dialog"
->
-  Close
-</button>
+<button onclick={close} aria-label="Close dialog"> Close </button>
 ```
 
 ### Live regions for dynamic content
@@ -86,20 +130,21 @@ Notifications and alerts must be announced to screen readers:
 ### Focus management for dialogs and modals
 
 Dialogs must:
+
 1. Focus the dialog element when opened
 2. Restore focus to the trigger element when closed
 
 ```svelte
 <script>
   import { onMount, tick } from 'svelte';
-  
+
   let triggerElement: HTMLElement | null = null;
   let dialogElement: HTMLDivElement;
-  
+
   onMount(() => {
     triggerElement = document.activeElement as HTMLElement;
     tick().then(() => dialogElement?.focus());
-    
+
     return () => triggerElement?.focus();
   });
 </script>
@@ -306,22 +351,22 @@ When you see duplicated code across multiple components, extract a shared compon
   // 1. Imports
   import { onMount } from 'svelte';
   import OtherComponent from './OtherComponent.svelte';
-  
+
   // 2. Props (with types and defaults)
   export let title: string;
   export let disabled = false;
   export let onchange: ((value: string) => void) | undefined = undefined;
-  
+
   // 3. Local state
   let isOpen = false;
   let element: HTMLDivElement;
-  
+
   // 4. Functions
   function handleClick() {
     isOpen = !isOpen;
     onchange?.('new value');
   }
-  
+
   // 5. Lifecycle hooks
   onMount(() => {
     // setup
@@ -342,7 +387,7 @@ When you see duplicated code across multiple components, extract a shared compon
   .component {
     /* styles */
   }
-  
+
   .disabled {
     opacity: 0.5;
   }
@@ -358,6 +403,12 @@ Run these checks before committing:
 ```bash
 # Type checking
 npm run check
+
+# Linting
+npm run lint
+
+# Test suite
+npm run test
 
 # Package validation
 npm run package
@@ -378,4 +429,6 @@ npm run package
 - [ ] No duplicated code across components
 - [ ] No unused props or code
 - [ ] `npm run check` passes
+- [ ] `npm run lint` passes
+- [ ] `npm run test` passes
 - [ ] `npm run package` succeeds

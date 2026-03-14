@@ -1,30 +1,65 @@
 <script lang="ts">
   import titleBg from '../assets/titlebar_bg.png';
   import closeButton from '../assets/close_button.png';
-  import resizeButton from '../assets/resize_button.png';
   import windowshadeButton from '../assets/windowshade_button.png';
 
+  /** Window title text shown in the center label. */
   export let title: string;
+
+  /** Shows the close button when `true`. */
   export let closable = false;
+
+  /** Shows the shade/collapse button when `true`. */
   export let shadeable = false;
+
+  /** Enables drag start handling on pointer/touch down. */
   export let draggable = false;
+
+  /** Renders focused styling when `true`. */
   export let focused = true;
 
+  /** Callback fired when the close control is activated. */
   export let onclose: (() => void) | undefined = undefined;
+
+  /** Callback fired when the shade control is activated. */
   export let onshade: (() => void) | undefined = undefined;
-  export let ondragstart: ((e: MouseEvent) => void) | undefined = undefined;
+
+  /** Callback fired when dragging starts from the title bar. */
+  export let ondragstart: ((e: MouseEvent | TouchEvent) => void) | undefined = undefined;
+
+  function shouldIgnoreDragStart(target: EventTarget | null) {
+    const element = target as HTMLElement | null;
+    if (!element) {
+      return false;
+    }
+
+    return Boolean(
+      element.closest('.close-box') ||
+      element.closest('.shade-box') ||
+      element.closest('.button-container')
+    );
+  }
 
   function handleMousedown(event: MouseEvent) {
     if (!draggable) {
       return;
     }
 
-    const target = event.target as HTMLElement;
-    if (
-      target.closest('.close-box') ||
-      target.closest('.shade-box') ||
-      target.closest('.button-container')
-    ) {
+    if (shouldIgnoreDragStart(event.target)) {
+      return;
+    }
+
+    if (ondragstart) {
+      ondragstart(event);
+    }
+  }
+
+  function handleTouchStart(event: TouchEvent) {
+    if (!draggable) {
+      return;
+    }
+
+    if (shouldIgnoreDragStart(event.target)) {
       return;
     }
 
@@ -47,6 +82,7 @@
   class:draggable
   class:unfocused={!focused}
   onmousedown={handleMousedown}
+  ontouchstart={handleTouchStart}
   style="background-image: url({titleBg});"
 >
   {#if closable}
@@ -108,8 +144,8 @@
     letter-spacing: 1px;
     background: #eee;
     font-size: 24px;
-    top:2px;
-    bottom:2px;
+    top: 2px;
+    bottom: 2px;
     padding: 2px 12px 2px 12px;
     font-weight: normal;
     position: absolute;

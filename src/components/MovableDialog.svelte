@@ -1,10 +1,18 @@
 <script lang="ts">
   import { onMount, onDestroy, tick } from 'svelte';
+  import ErrorBoundary from './ErrorBoundary.svelte';
   import TitleBar from './TitleBar.svelte';
 
+  /** Window title text rendered in the title bar. */
   export let title: string;
+
+  /** CSS width value applied to the movable window frame. */
   export let width = '460px';
+
+  /** Renders focused title bar styling when `true`. */
   export let focused = true;
+
+  /** Callback fired when the backdrop or close button closes the dialog. */
   export let onclose: (() => void) | undefined = undefined;
 
   let dialogElement: HTMLDivElement;
@@ -31,15 +39,37 @@
     isCollapsed = !isCollapsed;
   }
 
-  function handleDragStart(event: MouseEvent) {
+  function getEventPoint(event: MouseEvent | TouchEvent) {
+    if ('touches' in event) {
+      const touchPoint = event.touches[0] ?? event.changedTouches[0];
+      if (!touchPoint) {
+        return null;
+      }
+
+      return { x: touchPoint.clientX, y: touchPoint.clientY };
+    }
+
+    return { x: event.clientX, y: event.clientY };
+  }
+
+  function handleDragStart(event: MouseEvent | TouchEvent) {
     if (!dialogElement) {
       return;
     }
 
+    const pointer = getEventPoint(event);
+    if (!pointer) {
+      return;
+    }
+
+    if ('touches' in event) {
+      event.preventDefault();
+    }
+
     isDragging = true;
     const rect = dialogElement.getBoundingClientRect();
-    dragOffset.x = event.clientX - rect.left;
-    dragOffset.y = event.clientY - rect.top;
+    dragOffset.x = pointer.x - rect.left;
+    dragOffset.y = pointer.y - rect.top;
 
     if (!initialized) {
       position.x = rect.left;
@@ -48,11 +78,19 @@
     }
 
     document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('mouseup', handleDragEnd);
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleDragEnd);
+    document.addEventListener('touchcancel', handleDragEnd);
   }
 
-  function handleMouseMove(event: MouseEvent) {
+  function handleDragMove(event: MouseEvent | TouchEvent) {
     if (!isDragging || !dialogElement) {
+      return;
+    }
+
+    const pointer = getEventPoint(event);
+    if (!pointer) {
       return;
     }
 
@@ -60,8 +98,8 @@
     const dialogWidth = rect.width;
     const dialogHeight = rect.height;
 
-    let newX = event.clientX - dragOffset.x;
-    let newY = event.clientY - dragOffset.y;
+    const newX = pointer.x - dragOffset.x;
+    const newY = pointer.y - dragOffset.y;
 
     const minX = 0;
     const minY = 0;
@@ -72,10 +110,22 @@
     position.y = Math.max(minY, Math.min(newY, maxY));
   }
 
-  function handleMouseUp() {
+  function handleMouseMove(event: MouseEvent) {
+    handleDragMove(event);
+  }
+
+  function handleTouchMove(event: TouchEvent) {
+    event.preventDefault();
+    handleDragMove(event);
+  }
+
+  function handleDragEnd() {
     isDragging = false;
     document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
+    document.removeEventListener('mouseup', handleDragEnd);
+    document.removeEventListener('touchmove', handleTouchMove);
+    document.removeEventListener('touchend', handleDragEnd);
+    document.removeEventListener('touchcancel', handleDragEnd);
   }
 
   onMount(() => {
@@ -91,13 +141,15 @@
 
   onDestroy(() => {
     document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
+    document.removeEventListener('mouseup', handleDragEnd);
+    document.removeEventListener('touchmove', handleTouchMove);
+    document.removeEventListener('touchend', handleDragEnd);
+    document.removeEventListener('touchcancel', handleDragEnd);
   });
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events, a11y-no-static-element-interactions -->
 <div
-  class="backdrop"
+  class="s7-backdrop"
   onclick={close}
   onkeydown={(e) => {
     if (e.key === 'Enter' || e.key === ' ') close();
@@ -108,9 +160,11 @@
 >
   <div
     bind:this={dialogElement}
-    class="dialog"
+    class="s7-dialog"
     class:dragging={isDragging}
-    style="width: {width}; {initialized ? `position: fixed; left: ${position.x}px; top: ${position.y}px; transform: none;` : ''}"
+    style="width: {width}; {initialized
+      ? `position: fixed; left: ${position.x}px; top: ${position.y}px; transform: none;`
+      : ''}"
     onclick={(e) => e.stopPropagation()}
     onkeydown={(e) => e.stopPropagation()}
     role="dialog"
@@ -130,28 +184,49 @@
 
     {#if !isCollapsed}
       <div class="modal-content">
-        <slot />
+        <ErrorBoundary fallbackMessage="Unable to render dialog content.">
+          <!-- @slot default - Dialog body content. -->
+          <slot />
+        </ErrorBoundary>
       </div>
     {/if}
   </div>
 </div>
 
 <style>
+  .s7-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--system7-z-dialog, 100);
+  }
+
   .modal-content {
     padding: 16px;
     display: flex;
     flex-direction: column;
   }
 
-  .dialog {
+  .s7-dialog {
+    background: #fff;
+    border: 1px solid #000;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
     outline: none;
   }
 
-  .dialog:focus {
+  .s7-dialog:focus {
     outline: none;
   }
 
-  .dialog.dragging {
+  .s7-dialog.dragging {
     user-select: none;
   }
 </style>

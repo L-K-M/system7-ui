@@ -1,8 +1,12 @@
 <script lang="ts">
-  import { onMount, onDestroy, tick } from 'svelte';
+  import { onMount, tick } from 'svelte';
+  import ErrorBoundary from './ErrorBoundary.svelte';
   import frameParts from '../assets/modal_frame_parts.png';
 
+  /** CSS width value applied to the modal frame. */
   export let width = '400px';
+
+  /** Callback fired when the backdrop is activated to close the modal. */
   export let onclose: (() => void) | undefined = undefined;
 
   let triggerElement: HTMLElement | null = null;
@@ -27,7 +31,7 @@
 </script>
 
 <div
-  class="backdrop"
+  class="s7-backdrop"
   onclick={close}
   onkeydown={(e) => {
     if (e.key === 'Enter' || e.key === ' ') close();
@@ -38,7 +42,7 @@
 >
   <div
     bind:this={dialogElement}
-    class="fixed-dialog"
+    class="s7-fixed-dialog"
     style="width: {width}; border-image-source: url({frameParts});"
     onclick={(e) => e.stopPropagation()}
     onkeydown={(e) => e.stopPropagation()}
@@ -46,14 +50,17 @@
     aria-modal="true"
     tabindex="-1"
   >
-    <div class="dialog-content">
-      <slot />
+    <div class="s7-dialog-content">
+      <ErrorBoundary fallbackMessage="Unable to render modal content.">
+        <!-- @slot default - Modal body content. -->
+        <slot />
+      </ErrorBoundary>
     </div>
   </div>
 </div>
 
 <style>
-  .backdrop {
+  .s7-backdrop {
     position: fixed;
     top: 0;
     left: 0;
@@ -63,10 +70,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100;
+    z-index: var(--system7-z-dialog, 100);
   }
 
-  .fixed-dialog {
+  .s7-fixed-dialog {
     position: relative;
     background: #fff;
     border: 32px solid transparent;
@@ -75,11 +82,11 @@
     outline: none;
   }
 
-  .fixed-dialog:focus {
+  .s7-fixed-dialog:focus {
     outline: none;
   }
 
-  .dialog-content {
+  .s7-dialog-content {
     padding: 4px;
   }
 </style>

@@ -8,14 +8,7 @@
   export { className as class };
 </script>
 
-<img
-  src={src}
-  {alt}
-  {title}
-  width={size}
-  height={size}
-  class={`sys7-icon ${className}`.trim()}
-/>
+<img {src} {alt} {title} width={size} height={size} class={`sys7-icon ${className}`.trim()} />
 
 <style>
   .sys7-icon {
