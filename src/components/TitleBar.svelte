@@ -108,7 +108,9 @@
     letter-spacing: 1px;
     background: #eee;
     font-size: 24px;
-    padding: 4px 12px 2px 12px;
+    top:2px;
+    bottom:2px;
+    padding: 2px 12px 2px 12px;
     font-weight: normal;
     position: absolute;
     left: 50%;
