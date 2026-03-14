@@ -197,7 +197,7 @@
     width: 100%;
     height: 100%;
     overflow: visible;
-    z-index: 10001;
+    z-index: calc(var(--system7-z-tooltip, 10000) + 1);
     pointer-events: none;
   }
 
@@ -206,7 +206,7 @@
     left: 50%;
     transform: translateX(-50%);
     width: max-content;
-    z-index: 10000;
+    z-index: var(--system7-z-tooltip, 10000);
     pointer-events: none;
     animation: fadeIn 0.2s ease-in;
     border-radius: 10px;

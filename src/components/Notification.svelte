@@ -40,7 +40,7 @@
     align-items: center;
     gap: 8px;
     max-width: 300px;
-    z-index: 10000;
+    z-index: var(--system7-z-notification, 1000);
     pointer-events: none;
     animation: fadeIn 0.2s ease-in;
     border-radius: 10px;

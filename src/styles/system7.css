@@ -1,3 +1,9 @@
+:root {
+  --system7-z-dialog: 100;
+  --system7-z-notification: 1000;
+  --system7-z-tooltip: 10000;
+}
+
 @font-face {
   font-family: 'Sysfont';
   src: url('../assets/fonts/Sysfont.otf') format('opentype');
@@ -124,7 +130,7 @@ input.error {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: var(--system7-z-dialog);
 }
 
 .window-frame,
