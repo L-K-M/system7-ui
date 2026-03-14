@@ -35,6 +35,10 @@
   let showMovable = $state(false);
   let showConfirm = $state(false);
   let themeSectionExpanded = $state(true);
+  let demoWindowHeight = $state<number | null>(null);
+
+  let demoWindowElement: HTMLDivElement | null = null;
+  let contentElement: HTMLElement | null = null;
 
   type WindowColorPreset = {
     key: string;
@@ -101,6 +105,26 @@
 
   function bumpProgress(delta: number) {
     installProgress = Math.min(100, Math.max(0, installProgress + delta));
+  }
+
+  function getDemoWindowMaxHeight() {
+    if (window.matchMedia('(max-width: 880px)').matches) {
+      return Math.max(360, window.innerHeight - 20);
+    }
+
+    return Math.max(420, Math.floor(window.innerHeight * 0.92));
+  }
+
+  function resizeDemoWindowToFit() {
+    if (!demoWindowElement || !contentElement) {
+      return;
+    }
+
+    const titleBarHeight =
+      demoWindowElement.querySelector<HTMLElement>('.title-bar')?.offsetHeight ?? 35;
+    const frameHeight = Math.ceil(titleBarHeight + contentElement.scrollHeight + 2);
+
+    demoWindowHeight = Math.min(getDemoWindowMaxHeight(), Math.max(360, frameHeight));
   }
 
   type RgbColor = { r: number; g: number; b: number };
@@ -203,10 +227,20 @@
 <div class="desktop s7-root" style={getDemoThemeStyle()}>
   <Notification {notifications} markdown />
 
-  <div class="s7-window-frame demo-window">
-    <TitleBar title="System 7 UI Components" closable shadeable />
+  <div
+    class="s7-window-frame demo-window"
+    bind:this={demoWindowElement}
+    style={demoWindowHeight ? `height: ${demoWindowHeight}px;` : ''}
+  >
+    <TitleBar
+      title="System 7 UI Components"
+      closable
+      collapsible
+      shadeable
+      oncollapse={resizeDemoWindowToFit}
+    />
 
-    <main class="content">
+    <main class="content" bind:this={contentElement}>
       <section class="panel">
         <ExpandableSection label="Theme Colors" bind:expanded={themeSectionExpanded}>
           <p class="theme-note">

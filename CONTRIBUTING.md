@@ -330,12 +330,12 @@ When you see duplicated code across multiple components, extract a shared compon
 ```svelte
 <!-- BAD: Unused prop -->
 <script>
-  export let collapsible = false; // Never used!
+  export let debugMode = false; // Never used!
 </script>
 
 <!-- GOOD: Clean up unused code -->
 <script>
-  // collapsible removed - functionality not implemented
+  // Removed debugMode because it was never used
   export let shadeable = false; // Actually used
 </script>
 ```
