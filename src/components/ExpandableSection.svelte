@@ -44,8 +44,8 @@
       src={expanded ? disclosureTriangleDown : disclosureTriangleRight}
       alt=""
       aria-hidden="true"
-      width="9"
-      height="9"
+      width="16"
+      height="16"
       draggable="false"
     />
     <span class="label">{label}</span>
