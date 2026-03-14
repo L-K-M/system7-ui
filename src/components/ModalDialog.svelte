@@ -1,14 +1,29 @@
 <script lang="ts">
+  import { onMount, onDestroy, tick } from 'svelte';
   import frameParts from '../assets/modal_frame_parts.png';
 
   export let width = '400px';
   export let onclose: (() => void) | undefined = undefined;
+
+  let triggerElement: HTMLElement | null = null;
+  let dialogElement: HTMLDivElement;
 
   function close() {
     if (onclose) {
       onclose();
     }
   }
+
+  onMount(() => {
+    triggerElement = document.activeElement as HTMLElement;
+    tick().then(() => {
+      dialogElement?.focus();
+    });
+
+    return () => {
+      triggerElement?.focus();
+    };
+  });
 </script>
 
 <div
@@ -22,6 +37,7 @@
   aria-label="Close modal"
 >
   <div
+    bind:this={dialogElement}
     class="fixed-dialog"
     style="width: {width}; border-image-source: url({frameParts});"
     onclick={(e) => e.stopPropagation()}
@@ -56,6 +72,11 @@
     border: 32px solid transparent;
     border-image-slice: 32 fill;
     border-image-repeat: repeat;
+    outline: none;
+  }
+
+  .fixed-dialog:focus {
+    outline: none;
   }
 
   .dialog-content {

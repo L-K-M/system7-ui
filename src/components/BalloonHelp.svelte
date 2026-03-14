@@ -2,7 +2,7 @@
   import MarkdownIt from 'markdown-it';
 
   export let message = '';
-  export let position = 'bottom';
+  export let position: 'top' | 'bottom' = 'bottom';
   export let delay = 1000;
   export let markdown = false;
 

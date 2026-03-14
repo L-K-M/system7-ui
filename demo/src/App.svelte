@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import '@lkmc/system7-ui/styles.css';
   import {
     BalloonHelp,
@@ -19,18 +19,18 @@
     TrashIcon
   } from '@lkmc/system7-ui';
 
-  let selectedProfile = 'quick';
-  let autoRefresh = true;
-  let includeOffline = false;
-  let scanScope = 'lan';
-  let notifications = [];
-  let notificationId = 1;
-  let installProgress = 78;
+  let selectedProfile = $state('quick');
+  let autoRefresh = $state(true);
+  let includeOffline = $state(false);
+  let scanScope = $state('lan');
+  let notifications = $state<{ id: number; message: string; type: 'success' | 'error' | 'info' }[]>([]);
+  let notificationId = $state(1);
+  let installProgress = $state(78);
 
-  let showError = false;
-  let showModal = false;
-  let showMovable = false;
-  let showConfirm = false;
+  let showError = $state(false);
+  let showModal = $state(false);
+  let showMovable = $state(false);
+  let showConfirm = $state(false);
 
   const profileOptions = [
     { value: 'quick', label: 'Quick' },
@@ -46,7 +46,7 @@
     '- Highlight `inline code` snippets'
   ].join('\n');
 
-  function addNotification(type) {
+  function addNotification(type: 'success' | 'error' | 'info') {
     const label = type[0].toUpperCase() + type.slice(1);
     const id = notificationId++;
     notifications = [...notifications, { id, message: `${label}: sample message`, type }];
@@ -55,16 +55,16 @@
     }, 2500);
   }
 
-  function bumpProgress(delta) {
+  function bumpProgress(delta: number) {
     installProgress = Math.min(100, Math.max(0, installProgress + delta));
   }
 </script>
 
 <div class="desktop">
-  <Notification {notifications} />
+  <Notification {notifications} markdown />
 
   <div class="window-frame demo-window">
-    <TitleBar title="System 7 UI Components" closable collapsible shadeable />
+    <TitleBar title="System 7 UI Components" closable shadeable />
 
     <main class="content">
       <section class="panel">

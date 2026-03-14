@@ -6,13 +6,11 @@
 
   export let title: string;
   export let closable = false;
-  export let collapsible = false;
   export let shadeable = false;
   export let draggable = false;
   export let focused = true;
 
   export let onclose: (() => void) | undefined = undefined;
-  export let oncollapse: (() => void) | undefined = undefined;
   export let onshade: (() => void) | undefined = undefined;
   export let ondragstart: ((e: MouseEvent) => void) | undefined = undefined;
 
@@ -24,7 +22,6 @@
     const target = event.target as HTMLElement;
     if (
       target.closest('.close-box') ||
-      target.closest('.collapse-box') ||
       target.closest('.shade-box') ||
       target.closest('.button-container')
     ) {
@@ -33,6 +30,13 @@
 
     if (ondragstart) {
       ondragstart(event);
+    }
+  }
+
+  function handleKeydown(handler: (() => void) | undefined, e: KeyboardEvent) {
+    if (handler && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      handler();
     }
   }
 </script>
@@ -46,7 +50,6 @@
   style="background-image: url({titleBg});"
 >
   {#if closable}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="button-container" onmousedown={(e) => e.stopPropagation()}>
       <div
@@ -54,6 +57,7 @@
         role="button"
         tabindex="0"
         onclick={onclose}
+        onkeydown={(e) => handleKeydown(onclose, e)}
         style="background-image: url({closeButton});"
       ></div>
     </div>
@@ -62,22 +66,7 @@
   <div class="title-text">{title}</div>
 
   <div class="right-side-buttons">
-    {#if collapsible}
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <div class="button-container" onmousedown={(e) => e.stopPropagation()}>
-        <div
-          class="collapse-box"
-          role="button"
-          tabindex="0"
-          onclick={oncollapse}
-          style="background-image: url({resizeButton});"
-        ></div>
-      </div>
-    {/if}
-
     {#if shadeable}
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div class="button-container" onmousedown={(e) => e.stopPropagation()}>
         <div
@@ -85,6 +74,7 @@
           role="button"
           tabindex="0"
           onclick={onshade}
+          onkeydown={(e) => handleKeydown(onshade, e)}
           style="background-image: url({windowshadeButton});"
         ></div>
       </div>
@@ -143,16 +133,11 @@
     margin-left: 12px;
   }
 
-  .button-container:has(.collapse-box) {
-    margin-right: 12px;
-  }
-
   .button-container:has(.shade-box) {
     margin-right: 12px;
   }
 
   .close-box,
-  .collapse-box,
   .shade-box {
     width: 22px;
     height: 22px;
@@ -174,7 +159,6 @@
   }
 
   .close-box:active,
-  .collapse-box:active,
   .shade-box:active {
     filter: invert(1);
   }

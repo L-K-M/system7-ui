@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  import { onMount, onDestroy, tick } from 'svelte';
   import TitleBar from './TitleBar.svelte';
 
   export let title: string;
@@ -13,6 +13,7 @@
   let dragOffset = { x: 0, y: 0 };
   let position = { x: 0, y: 0 };
   let initialized = false;
+  let triggerElement: HTMLElement | null = null;
 
   function close() {
     if (onclose) {
@@ -77,6 +78,17 @@
     document.removeEventListener('mouseup', handleMouseUp);
   }
 
+  onMount(() => {
+    triggerElement = document.activeElement as HTMLElement;
+    tick().then(() => {
+      dialogElement?.focus();
+    });
+
+    return () => {
+      triggerElement?.focus();
+    };
+  });
+
   onDestroy(() => {
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
@@ -84,13 +96,26 @@
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events, a11y-no-static-element-interactions -->
-<div class="backdrop" on:click={close}>
+<div
+  class="backdrop"
+  onclick={close}
+  onkeydown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') close();
+  }}
+  role="button"
+  tabindex="0"
+  aria-label="Close dialog"
+>
   <div
     bind:this={dialogElement}
     class="dialog"
     class:dragging={isDragging}
     style="width: {width}; {initialized ? `position: fixed; left: ${position.x}px; top: ${position.y}px; transform: none;` : ''}"
-    on:click|stopPropagation
+    onclick={(e) => e.stopPropagation()}
+    onkeydown={(e) => e.stopPropagation()}
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
   >
     <TitleBar
       {title}
@@ -116,6 +141,14 @@
     padding: 16px;
     display: flex;
     flex-direction: column;
+  }
+
+  .dialog {
+    outline: none;
+  }
+
+  .dialog:focus {
+    outline: none;
   }
 
   .dialog.dragging {

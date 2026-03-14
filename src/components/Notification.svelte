@@ -1,15 +1,33 @@
 <script lang="ts">
-  export let notifications: { id: number; message: string; type: 'success' | 'error' | 'info' }[] = [];
+  import MarkdownIt from 'markdown-it';
 
-  function formatMessage(message: string) {
-    return message.replace(/\n/g, '<br>');
+  export let notifications: { id: number; message: string; type: 'success' | 'error' | 'info' }[] = [];
+  export let markdown = false;
+
+  const markdownParser = new MarkdownIt({
+    html: false,
+    linkify: true,
+    breaks: true
+  });
+
+  function renderMarkdown(text: string) {
+    return markdownParser.render(text);
   }
 </script>
 
 {#each notifications as notification (notification.id)}
-  <div class="notification notification-{notification.type}" style="bottom: {20 + notifications.indexOf(notification) * 70}px;">
+  <div
+    class="notification notification-{notification.type}"
+    style="bottom: {20 + notifications.indexOf(notification) * 70}px;"
+    role="alert"
+    aria-live="polite"
+  >
     <div class="notification-content">
-      {@html formatMessage(notification.message)}
+      {#if markdown}
+        {@html renderMarkdown(notification.message)}
+      {:else}
+        {notification.message}
+      {/if}
     </div>
   </div>
 {/each}
@@ -48,6 +66,25 @@
     flex: 1;
     overflow-wrap: break-word;
     hyphens: auto;
+    white-space: pre-wrap;
+  }
+
+  .notification-content :global(p) {
+    margin: 0;
+  }
+
+  .notification-content :global(p + p) {
+    margin-top: 0.5em;
+  }
+
+  .notification-content :global(ul),
+  .notification-content :global(ol) {
+    margin: 0.4em 0;
+    padding-left: 1.2em;
+  }
+
+  .notification-content :global(code) {
+    font-family: 'Monaco', 'Andale Mono', 'Courier New', monospace;
   }
 
   @keyframes fadeIn {

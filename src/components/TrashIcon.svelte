@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Icon from './Icon.svelte';
   import icon from '../assets/trash.png';
 
   export let alt = 'Trash';
@@ -9,12 +10,4 @@
   export { className as class };
 </script>
 
-<img src={icon} {alt} {title} width={size} height={size} class={`sys7-icon ${className}`.trim()} />
-
-<style>
-  .sys7-icon {
-    display: block;
-    flex-shrink: 0;
-    image-rendering: pixelated;
-  }
-</style>
+<Icon src={icon} {alt} {size} {title} class={className} />
