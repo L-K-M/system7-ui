@@ -99,20 +99,12 @@
 
   .sys7-dropdown.disabled {
     border-color: #888;
-    box-shadow: none;
+    box-shadow: 2px 2px 0 #888;
   }
 
   .sys7-dropdown.disabled select {
     color: #888;
     cursor: default;
-  }
-
-  .sys7-dropdown.disabled .arrow {
-    background: #f3f3f3;
-  }
-
-  .sys7-dropdown.disabled::after {
-    background: #888;
   }
 
   .sys7-dropdown.disabled .arrow::before {
