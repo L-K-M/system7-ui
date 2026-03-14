@@ -1,6 +1,6 @@
 {
   "name": "@lkmc/system7-ui",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Reusable System 7 style Svelte UI components",
   "license": "Unlicense",
   "type": "module",
