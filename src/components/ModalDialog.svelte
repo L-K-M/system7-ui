@@ -66,7 +66,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.1);
+    background: var(--system7-overlay-soft, rgba(0, 0, 0, 0.1));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -75,7 +75,7 @@
 
   .s7-fixed-dialog {
     position: relative;
-    background: #fff;
+    background: var(--system7-color-paper, #fff);
     border: 32px solid transparent;
     border-image-slice: 32 fill;
     border-image-repeat: repeat;

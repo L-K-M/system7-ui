@@ -23,6 +23,10 @@
    */
   export let onchange: ((checked: boolean, e: Event) => void) | undefined = undefined;
 
+  const paperColor = 'var(--system7-color-paper, #fff)';
+  const inkColor = 'var(--system7-color-ink, #000)';
+  const disabledInkColor = 'var(--system7-color-disabled-ink, #808080)';
+
   function handleChange(e: Event) {
     const target = e.currentTarget as HTMLInputElement;
     checked = target.checked;
@@ -41,8 +45,8 @@
         y="0.75"
         width="14.5"
         height="14.5"
-        fill="#fff"
-        stroke={disabled ? '#888' : '#000'}
+        fill={paperColor}
+        stroke={disabled ? disabledInkColor : inkColor}
         stroke-width="1.5"
       />
       {#if checked}
@@ -51,7 +55,7 @@
           y1="0.75"
           x2="15.25"
           y2="15.25"
-          stroke={disabled ? '#888' : '#000'}
+          stroke={disabled ? disabledInkColor : inkColor}
           stroke-width="1.5"
           stroke-linecap="square"
         />
@@ -60,7 +64,7 @@
           y1="0.75"
           x2="0.75"
           y2="15.25"
-          stroke={disabled ? '#888' : '#000'}
+          stroke={disabled ? disabledInkColor : inkColor}
           stroke-width="1.5"
           stroke-linecap="square"
         />
@@ -103,12 +107,12 @@
   }
 
   .sys7-checkbox input:focus + .icon-wrap {
-    outline: 1px dotted #000;
+    outline: 1px dotted var(--system7-color-focus-ring, var(--system7-color-accent, #000));
     outline-offset: 2px;
   }
 
   .sys7-checkbox.disabled {
     cursor: default;
-    color: #888;
+    color: var(--system7-color-disabled-ink, #808080);
   }
 </style>

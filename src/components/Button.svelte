@@ -40,7 +40,7 @@
 <style>
   .primary-border {
     display: inline-block;
-    border: 3px solid #000;
+    border: 3px solid var(--system7-color-ink, #000);
     border-radius: 10px;
     padding: 2px;
     margin-top: -4px;
@@ -48,12 +48,12 @@
   }
 
   .primary-border.disabled {
-    border-color: #808080;
+    border-color: var(--system7-color-disabled-ink, #808080);
   }
 
   .sys7-btn {
-    background: #fff;
-    border: 1.5px solid #000;
+    background: var(--system7-color-paper, #fff);
+    border: 1.5px solid var(--system7-color-ink, #000);
     padding: 4px 20px 3px;
     font-family: inherit;
     cursor: pointer;
@@ -63,12 +63,12 @@
   }
 
   .sys7-btn:active:not(:disabled) {
-    background: #000;
-    color: #fff;
+    background: var(--system7-color-accent, #000);
+    color: var(--system7-color-accent-text, #fff);
   }
 
   .sys7-btn:disabled {
-    color: #808080;
+    color: var(--system7-color-disabled-ink, #808080);
     cursor: default;
   }
 

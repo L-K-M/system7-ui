@@ -18,8 +18,8 @@
 
 <style>
   .error-banner {
-    background: #000;
-    color: #fff;
+    background: var(--system7-color-accent, #000);
+    color: var(--system7-color-accent-text, #fff);
     padding: 8px;
     margin: 8px 8px 0;
     display: flex;
@@ -34,8 +34,8 @@
   .close-error {
     margin-left: auto;
     background: none;
-    border: 1px solid #fff;
-    color: #fff;
+    border: 1px solid var(--system7-color-accent-text, #fff);
+    color: var(--system7-color-accent-text, #fff);
     cursor: pointer;
     width: 20px;
     height: 20px;
@@ -46,6 +46,6 @@
   }
 
   .close-error :global(img) {
-    filter: invert(1);
+    filter: var(--system7-close-icon-filter, invert(1));
   }
 </style>

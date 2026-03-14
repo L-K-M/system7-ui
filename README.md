@@ -36,6 +36,43 @@ Wrap the section that uses these components with `.s7-root` to apply System 7 ty
 </div>
 ```
 
+### Color Tokens
+
+`system7-ui` exposes CSS variables for theming. Core color tokens:
+
+- `--system7-color-accent`
+- `--system7-color-accent-text`
+- `--system7-color-highlight`
+- `--system7-color-highlight-text`
+- `--system7-color-ink`
+- `--system7-color-paper`
+
+Default accent/highlight tokens automatically fall back to legacy names used in host apps:
+
+- `--system-accent-color`
+- `--system-accent-text-color`
+- `--system-highlight-color`
+- `--system-highlight-text-color`
+
+### macOS/Tauri System Colors
+
+If your app already retrieves OS colors (for example, through a Tauri command), you can apply them directly with exported helpers:
+
+```ts
+import { applySystem7SystemColors } from '@lkmc/system7-ui';
+
+const colors = await TauriService.getSystemColors();
+applySystem7SystemColors(colors);
+```
+
+Or generate an inline style string for a specific container:
+
+```ts
+import { getSystem7ColorStyle } from '@lkmc/system7-ui';
+
+const style = getSystem7ColorStyle(colors);
+```
+
 Import components from the package root:
 
 ```svelte
@@ -66,6 +103,12 @@ Import components from the package root:
 - `TitleBar`
 - `TrashIcon`
 
+### Utility Exports
+
+- `applySystem7SystemColors`
+- `getSystem7ColorStyle`
+- `getSystem7ColorVariables`
+
 ### Type Exports
 
 Each component now includes an explicit `*Props` type export from the package entrypoint.
@@ -75,7 +118,8 @@ import type {
   ButtonProps,
   CheckboxProps,
   ModalDialogProps,
-  MovableDialogProps
+  MovableDialogProps,
+  System7SystemColors
 } from '@lkmc/system7-ui';
 ```
 

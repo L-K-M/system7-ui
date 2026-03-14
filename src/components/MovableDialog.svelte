@@ -200,7 +200,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--system7-overlay-strong, rgba(0, 0, 0, 0.2));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -214,9 +214,9 @@
   }
 
   .s7-dialog {
-    background: #fff;
-    border: 1px solid #000;
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+    background: var(--system7-color-paper, #fff);
+    border: 1px solid var(--system7-color-ink, #000);
+    box-shadow: 4px 4px 0 var(--system7-shadow-soft, rgba(0, 0, 0, 0.2));
     display: flex;
     flex-direction: column;
     outline: none;

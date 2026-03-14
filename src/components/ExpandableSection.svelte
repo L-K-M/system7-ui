@@ -65,7 +65,7 @@
   }
 
   .s7-expandable.disabled {
-    color: #888;
+    color: var(--system7-color-disabled-ink, #808080);
   }
 
   .disclosure-trigger {
@@ -86,7 +86,7 @@
   }
 
   .disclosure-trigger:focus {
-    outline: 1px dotted #000;
+    outline: 1px dotted var(--system7-color-focus-ring, var(--system7-color-accent, #000));
     outline-offset: 2px;
   }
 

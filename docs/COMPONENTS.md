@@ -46,6 +46,32 @@ The demo includes examples for buttons, inputs, tooltips, modals, notifications,
 </div>
 ```
 
+## Color Theming
+
+All components now use CSS custom properties for color styling.
+
+- Accent and selection:
+  - `--system7-color-accent`
+  - `--system7-color-accent-text`
+  - `--system7-color-highlight`
+  - `--system7-color-highlight-text`
+- Base surfaces:
+  - `--system7-color-ink`
+  - `--system7-color-paper`
+
+The accent/highlight tokens default to existing host-level variables:
+
+- `--system-accent-color`
+- `--system-accent-text-color`
+- `--system-highlight-color`
+- `--system-highlight-text-color`
+
+For apps that fetch OS colors at runtime, use utility exports:
+
+- `applySystem7SystemColors(colors, target?)`
+- `getSystem7ColorVariables(colors)`
+- `getSystem7ColorStyle(colors)`
+
 ## Key Components
 
 ### Button

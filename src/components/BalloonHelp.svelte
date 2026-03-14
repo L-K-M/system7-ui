@@ -187,9 +187,19 @@
   <slot />
   {#if showBalloon && message}
     <svg class="pointer-svg" aria-hidden="true">
-      <path d={pointerFillPath} fill="white" stroke="none" />
-      <path d={pointerLeftPath} fill="none" stroke="black" stroke-width="2" />
-      <path d={pointerRightPath} fill="none" stroke="black" stroke-width="2" />
+      <path d={pointerFillPath} fill="var(--system7-color-paper, #fff)" stroke="none" />
+      <path
+        d={pointerLeftPath}
+        fill="none"
+        stroke="var(--system7-color-ink, #000)"
+        stroke-width="2"
+      />
+      <path
+        d={pointerRightPath}
+        fill="none"
+        stroke="var(--system7-color-ink, #000)"
+        stroke-width="2"
+      />
     </svg>
     <div
       class="balloon {adjustedPosition}"
@@ -232,14 +242,14 @@
     pointer-events: none;
     animation: fadeIn 0.2s ease-in;
     border-radius: 10px;
-    border: 2px solid #000;
+    border: 2px solid var(--system7-color-ink, #000);
     padding: 15px;
     box-sizing: border-box;
     max-width: min(64ch, calc(100vw - 50px));
     max-height: calc(100vh - 50px);
     overflow: auto;
-    background-color: #fff;
-    box-shadow: 2px 2px 0 rgba(0, 0, 0, 1);
+    background-color: var(--system7-color-paper, #fff);
+    box-shadow: 2px 2px 0 var(--system7-shadow-color, #000);
   }
 
   .balloon-content {

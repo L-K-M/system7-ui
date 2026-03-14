@@ -2,6 +2,31 @@
   --system7-z-dialog: 100;
   --system7-z-notification: 1000;
   --system7-z-tooltip: 10000;
+  --system7-color-ink: #000;
+  --system7-color-paper: #fff;
+  --system7-color-disabled-ink: #808080;
+  --system7-color-accent: var(--system-accent-color, #000);
+  --system7-color-accent-text: var(--system-accent-text-color, #fff);
+  --system7-color-highlight: var(--system-highlight-color, #000);
+  --system7-color-highlight-text: var(--system-highlight-text-color, #fff);
+  --system7-color-focus-ring: var(--system7-color-accent);
+  --system7-color-titlebar: #eee;
+  --system7-color-titlebar-button: #f4f4f4;
+  --system7-color-titlebar-edge-dark: #a3a3d7;
+  --system7-color-titlebar-edge-light: #ccccff;
+  --system7-color-scrollbar-thumb: #ccccff;
+  --system7-color-scrollbar-thumb-line: #333366;
+  --system7-color-scrollbar-thumb-hover: rgba(80, 80, 80, 0.8);
+  --system7-color-progress-track: #bdc7ff;
+  --system7-color-progress-fill: #7a7a7a;
+  --system7-color-success: #4caf50;
+  --system7-color-error: #f44336;
+  --system7-color-info: #2196f3;
+  --system7-shadow-color: #000;
+  --system7-shadow-soft: rgba(0, 0, 0, 0.2);
+  --system7-overlay-soft: rgba(0, 0, 0, 0.1);
+  --system7-overlay-strong: rgba(0, 0, 0, 0.2);
+  --system7-close-icon-filter: invert(1);
 }
 
 @font-face {
@@ -56,18 +81,18 @@
 
 .s7-input {
   padding: 4px 6px;
-  border: 1px solid #000;
+  border: 1px solid var(--system7-color-ink, #000);
   font-family: inherit;
   outline: none;
-  background: #fff;
+  background: var(--system7-color-paper, #fff);
 }
 
 .s7-input.error {
-  border: 2px solid #000;
+  border: 2px solid var(--system7-color-ink, #000);
 }
 
 .s7-error-msg {
-  color: #000;
+  color: var(--system7-color-ink, #000);
   font-style: italic;
 }
 
@@ -80,16 +105,16 @@
   background-image: url('../assets/scrollbar.png');
   background-size: 170%;
   background-repeat: repeat-y;
-  border-left: 1px solid #000;
+  border-left: 1px solid var(--system7-color-ink, #000);
   image-rendering: pixelated;
 }
 
 .s7-root ::-webkit-scrollbar-thumb {
-  background: #ccccff;
-  border: 1px solid #000;
-  border-top-color: #333366;
-  border-bottom-color: #333366;
-  box-shadow: 1px 1px 0 #000;
+  background: var(--system7-color-scrollbar-thumb, #ccccff);
+  border: 1px solid var(--system7-color-ink, #000);
+  border-top-color: var(--system7-color-scrollbar-thumb-line, #333366);
+  border-bottom-color: var(--system7-color-scrollbar-thumb-line, #333366);
+  box-shadow: 1px 1px 0 var(--system7-shadow-color, #000);
   background-image: url('../assets/thumb_holder.png');
   background-position: center;
   background-repeat: no-repeat;
@@ -97,32 +122,32 @@
 }
 
 .s7-root ::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(80, 80, 80, 0.8);
+  background-color: var(--system7-color-scrollbar-thumb-hover, rgba(80, 80, 80, 0.8));
 }
 
 .s7-root .window-unfocused ::-webkit-scrollbar-track {
   background-image: none;
-  background-color: #fff;
+  background-color: var(--system7-color-paper, #fff);
 }
 
 .s7-root .window-unfocused ::-webkit-scrollbar-thumb {
   background-image: none;
-  background-color: #fff;
-  border-color: #fff;
+  background-color: var(--system7-color-paper, #fff);
+  border-color: var(--system7-color-paper, #fff);
   box-shadow: none;
 }
 
 .s7-window-frame,
 .s7-dialog {
-  background: #fff;
-  border: 1px solid #000;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+  background: var(--system7-color-paper, #fff);
+  border: 1px solid var(--system7-color-ink, #000);
+  box-shadow: 2px 2px 0 var(--system7-shadow-soft, rgba(0, 0, 0, 0.2));
   display: flex;
   flex-direction: column;
 }
 
 .s7-dialog {
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 4px 4px 0 var(--system7-shadow-soft, rgba(0, 0, 0, 0.2));
 }
 
 .s7-actions {

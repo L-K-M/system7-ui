@@ -48,9 +48,9 @@
   .sys7-dropdown {
     position: relative;
     display: inline-block;
-    border: 1.5px solid #000;
-    box-shadow: 2px 2px 0 #000;
-    background: #fff;
+    border: 1.5px solid var(--system7-color-ink, #000);
+    box-shadow: 2px 2px 0 var(--system7-shadow-color, #000);
+    background: var(--system7-color-paper, #fff);
     min-width: 180px;
   }
 
@@ -71,7 +71,7 @@
   }
 
   .sys7-dropdown select:focus {
-    outline: 1px dotted #000;
+    outline: 1px dotted var(--system7-color-focus-ring, var(--system7-color-accent, #000));
     outline-offset: -3px;
   }
 
@@ -82,7 +82,7 @@
     right: 0;
     width: 22px;
     height: 100%;
-    background: #fff;
+    background: var(--system7-color-paper, #fff);
     z-index: 3;
   }
 
@@ -94,20 +94,20 @@
     transform: translate(-50%, -30%);
     border-left: 7px solid transparent;
     border-right: 7px solid transparent;
-    border-top: 5px solid #000;
+    border-top: 5px solid var(--system7-color-ink, #000);
   }
 
   .sys7-dropdown.disabled {
-    border-color: #888;
-    box-shadow: 2px 2px 0 #888;
+    border-color: var(--system7-color-disabled-ink, #808080);
+    box-shadow: 2px 2px 0 var(--system7-color-disabled-ink, #808080);
   }
 
   .sys7-dropdown.disabled select {
-    color: #888;
+    color: var(--system7-color-disabled-ink, #808080);
     cursor: default;
   }
 
   .sys7-dropdown.disabled .arrow::before {
-    border-top-color: #888;
+    border-top-color: var(--system7-color-disabled-ink, #808080);
   }
 </style>

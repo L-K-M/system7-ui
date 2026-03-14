@@ -35,8 +35,8 @@
 
 <style>
   .error-boundary {
-    border: 1px solid #000;
-    background: #fff;
+    border: 1px solid var(--system7-color-ink, #000);
+    background: var(--system7-color-paper, #fff);
     padding: 8px;
     display: grid;
     gap: 6px;
@@ -56,9 +56,15 @@
 
   .retry-button {
     justify-self: start;
-    border: 1px solid #000;
-    background: #fff;
+    border: 1px solid var(--system7-color-ink, #000);
+    background: var(--system7-color-paper, #fff);
     padding: 2px 8px;
+    color: var(--system7-color-ink, #000);
     cursor: pointer;
+  }
+
+  .retry-button:active {
+    background: var(--system7-color-accent, #000);
+    color: var(--system7-color-accent-text, #fff);
   }
 </style>

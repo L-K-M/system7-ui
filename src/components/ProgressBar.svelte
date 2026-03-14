@@ -28,13 +28,13 @@
     display: inline-block;
     width: 100%;
     box-sizing: border-box;
-    border: 1.5px solid #000;
-    background: #bdc7ff;
+    border: 1.5px solid var(--system7-color-ink, #000);
+    background: var(--system7-color-progress-track, #bdc7ff);
   }
 
   .fill {
     height: 100%;
     position: relative;
-    background: #7a7a7a;
+    background: var(--system7-color-progress-fill, #7a7a7a);
   }
 </style>

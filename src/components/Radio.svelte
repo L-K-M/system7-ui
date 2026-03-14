@@ -23,6 +23,10 @@
    */
   export let onchange: ((value: string, e: Event) => void) | undefined = undefined;
 
+  const paperColor = 'var(--system7-color-paper, #fff)';
+  const inkColor = 'var(--system7-color-ink, #000)';
+  const disabledInkColor = 'var(--system7-color-disabled-ink, #808080)';
+
   function handleChange(e: Event) {
     const target = e.currentTarget as HTMLInputElement;
     checked = target.checked;
@@ -40,12 +44,12 @@
         cx="8"
         cy="8"
         r="7.25"
-        fill="#fff"
-        stroke={disabled ? '#888' : '#000'}
+        fill={paperColor}
+        stroke={disabled ? disabledInkColor : inkColor}
         stroke-width="1.5"
       />
       {#if checked}
-        <circle cx="8" cy="8" r="4.5" fill={disabled ? '#888' : '#000'} />
+        <circle cx="8" cy="8" r="4.5" fill={disabled ? disabledInkColor : inkColor} />
       {/if}
     </svg>
   </span>
@@ -85,12 +89,12 @@
   }
 
   .sys7-radio input:focus + .icon-wrap {
-    outline: 1px dotted #000;
+    outline: 1px dotted var(--system7-color-focus-ring, var(--system7-color-accent, #000));
     outline-offset: 2px;
   }
 
   .sys7-radio.disabled {
     cursor: default;
-    color: #888;
+    color: var(--system7-color-disabled-ink, #808080);
   }
 </style>

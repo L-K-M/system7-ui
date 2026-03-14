@@ -62,22 +62,22 @@
     pointer-events: none;
     animation: fadeIn 0.2s ease-in;
     border-radius: 10px;
-    border: 2px solid #000;
+    border: 2px solid var(--system7-color-ink, #000);
     padding: 15px;
-    background-color: #fff;
-    box-shadow: 2px 2px 0 rgba(0, 0, 0, 1);
+    background-color: var(--system7-color-paper, #fff);
+    box-shadow: 2px 2px 0 var(--system7-shadow-color, #000);
   }
 
   .notification.success {
-    border-left: 4px solid #4caf50;
+    border-left: 4px solid var(--system7-color-success, #4caf50);
   }
 
   .notification.error {
-    border-left: 4px solid #f44336;
+    border-left: 4px solid var(--system7-color-error, #f44336);
   }
 
   .notification.info {
-    border-left: 4px solid #2196f3;
+    border-left: 4px solid var(--system7-color-info, #2196f3);
   }
 
   .notification-content {
