@@ -84,25 +84,37 @@ Import components from the package root:
 ## Exports
 
 - `BalloonHelp`
+- `ArchiveFileIcon`
+- `AudioFileIcon`
 - `Button`
 - `Checkbox`
 - `CloseIcon`
+- `CodeFileIcon`
 - `ConfirmDialog`
 - `CopyIcon`
 - `DataTable`
+- `DocumentFileIcon`
 - `DownloadIcon`
 - `Dropdown`
 - `EditIcon`
 - `ErrorBoundary`
 - `ErrorBanner`
 - `ExpandableSection`
+- `FolderIcon`
+- `GenericFileIcon`
+- `ImageFileIcon`
 - `ModalDialog`
 - `MovableDialog`
 - `Notification`
+- `PdfFileIcon`
+- `PresentationFileIcon`
 - `ProgressBar`
 - `Radio`
+- `SpreadsheetFileIcon`
+- `TextFileIcon`
 - `TitleBar`
 - `TrashIcon`
+- `VideoFileIcon`
 
 ### Utility Exports
 
@@ -120,8 +132,36 @@ import type {
   CheckboxProps,
   ModalDialogProps,
   MovableDialogProps,
+  PdfFileIconProps,
   System7SystemColors
 } from '@lkmc/system7-ui';
+```
+
+### File Icons
+
+Use the file icon components for file pickers, upload queues, and table rows:
+
+- `FolderIcon`
+- `GenericFileIcon`
+- `TextFileIcon`
+- `PdfFileIcon`
+- `ImageFileIcon`
+- `ArchiveFileIcon`
+- `AudioFileIcon`
+- `VideoFileIcon`
+- `CodeFileIcon`
+- `SpreadsheetFileIcon`
+- `DocumentFileIcon`
+- `PresentationFileIcon`
+
+```svelte
+<script lang="ts">
+  import { FolderIcon, PdfFileIcon, TextFileIcon } from '@lkmc/system7-ui';
+</script>
+
+<FolderIcon alt="Books" />
+<PdfFileIcon />
+<TextFileIcon />
 ```
 
 ## BalloonHelp

@@ -143,3 +143,26 @@ For apps that fetch OS colors at runtime, use utility exports:
   - `default`: protected child content
 
 Use `ErrorBoundary` when rendering volatile UI blocks that should fail safely.
+
+### File Icons
+
+File/folder icon components are exported for common list and explorer UIs:
+
+- `FolderIcon`
+- `GenericFileIcon`
+- `TextFileIcon`
+- `PdfFileIcon`
+- `ImageFileIcon`
+- `ArchiveFileIcon`
+- `AudioFileIcon`
+- `VideoFileIcon`
+- `CodeFileIcon`
+- `SpreadsheetFileIcon`
+- `DocumentFileIcon`
+- `PresentationFileIcon`
+
+Each icon supports the same props shape as other icon wrappers:
+
+- `alt`: `string`
+- `size`: `number`
+- `title`: `string`

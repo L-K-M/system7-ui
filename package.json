@@ -12,6 +12,7 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "lint": "eslint .",
     "lint-staged": "lint-staged",
+    "precommit:checks": "npm run lint-staged && npm run check",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "test": "vitest run",
