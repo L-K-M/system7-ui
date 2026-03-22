@@ -48,7 +48,7 @@
   }
 
   .primary-border.disabled {
-    border-color: var(--system7-color-disabled-ink, #808080);
+    border-color: var(--system7-color-ink, #000);
   }
 
   .sys7-btn {
