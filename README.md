@@ -15,7 +15,7 @@ For local development before publishing:
 ```json
 {
   "dependencies": {
-    "@lkmc/system7-ui": "file:../../system7-ui/lkmc-system7-ui-0.1.0.tgz"
+    "@lkmc/system7-ui": "file:../../system7-ui"
   }
 }
 ```
@@ -89,6 +89,7 @@ Import components from the package root:
 - `CloseIcon`
 - `ConfirmDialog`
 - `CopyIcon`
+- `DataTable`
 - `DownloadIcon`
 - `Dropdown`
 - `EditIcon`
@@ -190,6 +191,27 @@ Props:
 Slots:
 
 - `default`: label content shown to the right of the checkbox icon
+
+## DataTable
+
+`DataTable` provides a reusable split-header table shell with sortable headers, dual header/body separators, empty/loading states, and a row slot.
+
+Common props:
+
+- `columns` (`Array<{ key, label, width?, className?, align?, sortable?, ariaLabel? }>`)
+- `sortKey` (`string | null`)
+- `sortDirection` (`'asc' | 'desc'`)
+- `onSort` (`(key: string) => void`)
+- `loading` (`boolean`)
+- `loadingText` (`string`)
+- `empty` (`boolean`)
+- `emptyText` (`string`)
+- `emptyColspan` (`number | null`)
+
+Slots:
+
+- `default`: table row markup (`<tr>...</tr>`) for the body
+- `header` (optional): custom `<tr>...</tr>` header when you need advanced layouts
 
 ## Radio
 

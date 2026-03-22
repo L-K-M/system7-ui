@@ -6,6 +6,7 @@
     Checkbox,
     ConfirmDialog,
     CopyIcon,
+    DataTable,
     DownloadIcon,
     Dropdown,
     EditIcon,
@@ -93,6 +94,47 @@
 
   const scrollRows = Array.from({ length: 24 }, (_, index) => index + 1);
   const scrollColumns = Array.from({ length: 10 }, (_, index) => index + 1);
+
+  type DemoTableSortField = 'host' | 'kind' | 'status' | 'ports';
+  type DemoTableSortDirection = 'asc' | 'desc';
+
+  const demoTableColumns = [
+    { key: 'host', label: 'Host', width: '30%', sortable: true },
+    { key: 'kind', label: 'Kind', width: '28%', sortable: true },
+    { key: 'status', label: 'Status', width: '22%', sortable: true },
+    { key: 'ports', label: 'Open Ports', width: '20%', sortable: true }
+  ];
+
+  const demoTableRows = [
+    { host: '192.168.1.3', kind: 'Router', status: 'Online', ports: '80, 443' },
+    { host: '192.168.1.22', kind: 'Media server', status: 'Online', ports: '22, 445, 8096' },
+    { host: '192.168.1.45', kind: 'Laptop', status: 'Offline', ports: '-' },
+    { host: '192.168.1.61', kind: 'Printer', status: 'Online', ports: '80, 631' },
+    { host: '192.168.1.93', kind: 'Camera', status: 'Warning', ports: '554, 8554' }
+  ];
+
+  let demoTableSortField = $state<DemoTableSortField>('host');
+  let demoTableSortDirection = $state<DemoTableSortDirection>('asc');
+
+  function sortDemoTable(field: string) {
+    const key = field as DemoTableSortField;
+    if (demoTableSortField === key) {
+      demoTableSortDirection = demoTableSortDirection === 'asc' ? 'desc' : 'asc';
+      return;
+    }
+
+    demoTableSortField = key;
+    demoTableSortDirection = 'asc';
+  }
+
+  function getSortedDemoRows() {
+    const multiplier = demoTableSortDirection === 'asc' ? 1 : -1;
+    return [...demoTableRows].sort((left, right) => {
+      const l = left[demoTableSortField];
+      const r = right[demoTableSortField];
+      return l.localeCompare(r, undefined, { numeric: true, sensitivity: 'base' }) * multiplier;
+    });
+  }
 
   function addNotification(type: 'success' | 'error' | 'info') {
     const label = type[0].toUpperCase() + type.slice(1);
@@ -456,6 +498,29 @@
       </section>
 
       <section class="panel">
+        <h3>DataTable</h3>
+        <div class="table-demo" aria-label="Data table demo">
+          <DataTable
+            columns={demoTableColumns}
+            sortKey={demoTableSortField}
+            sortDirection={demoTableSortDirection}
+            onSort={sortDemoTable}
+            empty={demoTableRows.length === 0}
+            emptyText="No hosts"
+          >
+            {#each getSortedDemoRows() as row (row.host)}
+              <tr>
+                <td>{row.host}</td>
+                <td>{row.kind}</td>
+                <td>{row.status}</td>
+                <td>{row.ports}</td>
+              </tr>
+            {/each}
+          </DataTable>
+        </div>
+      </section>
+
+      <section class="panel">
         <h3>Dialogs, Banners, Notifications</h3>
         <div class="row">
           <Button onclick={() => (showError = !showError)}
@@ -739,6 +804,14 @@
     background: var(--system7-color-paper, #fff);
     padding: 2px 6px 1px;
     white-space: nowrap;
+  }
+
+  .table-demo {
+    display: flex;
+    height: 210px;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid var(--system7-color-ink, #000);
   }
 
   .dialog-copy {
