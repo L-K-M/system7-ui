@@ -316,6 +316,35 @@ npm run demo:build
 
 Reference documentation is also available in `docs/COMPONENTS.md`.
 
+## Quality checks
+
+Run the core validation commands locally:
+
+```bash
+npm run check
+npm run lint
+npm run format:check
+npm run test
+```
+
+Or run them in one line:
+
+```bash
+npm run check && npm run lint && npm run format:check && npm run test
+```
+
+### Pre-commit checks (including IntelliJ)
+
+This repo uses Husky pre-commit hooks. After `npm install`, commits run:
+
+- staged-file autofix via `lint-staged`
+- `npm run check`
+- `npm run lint`
+- `npm run format:check`
+- `npm run test`
+
+If you commit from IntelliJ, make sure the commit dialog has **Run Git hooks** enabled so the same pre-commit checks run there too.
+
 ## Storybook
 
 Storybook is included for interactive component documentation, controls, and accessibility checks.
