@@ -11,6 +11,7 @@
   "scripts": {
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "lint": "eslint .",
+    "lint-staged": "lint-staged",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "test": "vitest run",
@@ -23,7 +24,8 @@
     "publish:npm": "./scripts/publish-npm.sh",
     "demo:install": "npm install --prefix demo",
     "demo:dev": "npm --prefix demo run dev",
-    "demo:build": "npm --prefix demo run build"
+    "demo:build": "npm --prefix demo run build",
+    "prepare": "husky"
   },
   "exports": {
     ".": {
@@ -65,7 +67,9 @@
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-svelte": "^3.0.0",
     "globals": "^15.15.0",
+    "husky": "^9.1.7",
     "jsdom": "^26.0.0",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.5.3",
     "prettier-plugin-svelte": "^3.3.3",
     "publint": "^0.2.12",
@@ -77,5 +81,12 @@
   },
   "dependencies": {
     "markdown-it": "^14.1.1"
+  },
+  "lint-staged": {
+    "*.{js,ts,svelte}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css,scss,yml,yaml}": "prettier --write"
   }
 }
