@@ -1,24 +1,36 @@
 <script lang="ts">
   import '@lkmc/system7-ui/styles.css';
   import {
+    ArchiveFileIcon,
+    AudioFileIcon,
     BalloonHelp,
     Button,
     Checkbox,
+    CodeFileIcon,
     ConfirmDialog,
     CopyIcon,
     DataTable,
+    DocumentFileIcon,
     DownloadIcon,
     Dropdown,
     EditIcon,
     ErrorBanner,
     ExpandableSection,
+    FolderIcon,
+    GenericFileIcon,
+    ImageFileIcon,
     ModalDialog,
     MovableDialog,
     Notification,
+    PdfFileIcon,
+    PresentationFileIcon,
     ProgressBar,
     Radio,
+    SpreadsheetFileIcon,
+    TextFileIcon,
     TitleBar,
-    TrashIcon
+    TrashIcon,
+    VideoFileIcon
   } from '@lkmc/system7-ui';
 
   let selectedProfile = $state('quick');
@@ -406,6 +418,22 @@
           <span class="icon-chip"><TrashIcon />Trash</span>
           <span class="icon-chip"><CopyIcon />Copy</span>
         </div>
+
+        <h4 class="icon-subheading">File and Folder Icons</h4>
+        <div class="file-icon-grid">
+          <span class="icon-chip"><FolderIcon />Folder</span>
+          <span class="icon-chip"><GenericFileIcon />Generic File</span>
+          <span class="icon-chip"><TextFileIcon />Text File</span>
+          <span class="icon-chip"><PdfFileIcon />PDF File</span>
+          <span class="icon-chip"><ImageFileIcon />Image File</span>
+          <span class="icon-chip"><ArchiveFileIcon />Archive File</span>
+          <span class="icon-chip"><AudioFileIcon />Audio File</span>
+          <span class="icon-chip"><VideoFileIcon />Video File</span>
+          <span class="icon-chip"><CodeFileIcon />Code File</span>
+          <span class="icon-chip"><SpreadsheetFileIcon />Spreadsheet</span>
+          <span class="icon-chip"><DocumentFileIcon />Document</span>
+          <span class="icon-chip"><PresentationFileIcon />Presentation</span>
+        </div>
       </section>
 
       <section class="panel">
@@ -749,6 +777,23 @@
 
   .icon-row {
     margin-bottom: 0;
+  }
+
+  .icon-subheading {
+    margin: 2px 0 8px;
+    font-size: 16px;
+  }
+
+  .file-icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(156px, 1fr));
+    gap: 8px;
+  }
+
+  .file-icon-grid .icon-chip {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
   }
 
   .icon-chip {
