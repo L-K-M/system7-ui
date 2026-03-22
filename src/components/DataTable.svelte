@@ -104,7 +104,10 @@
 </script>
 
 <div class={`s7-data-table-root ${className}`}>
-  <div class={`s7-data-table-header-container ${headerClass}`} style:padding-right={`${headerPaddingRight}px`}>
+  <div
+    class={`s7-data-table-header-container ${headerClass}`}
+    style:padding-right={`${headerPaddingRight}px`}
+  >
     <table class={`s7-data-table-table ${tableClass}`}>
       {#if columns.length > 0}
         <colgroup>
@@ -115,7 +118,7 @@
       {/if}
       <thead>
         {#if $$slots.header}
-          <slot name="header" {sortKey} {sortDirection} onSort={onSort} />
+          <slot name="header" {sortKey} {sortDirection} {onSort} />
         {:else}
           <tr>
             {#each columns as column (column.key)}
