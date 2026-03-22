@@ -1,8 +1,17 @@
 <script lang="ts">
+  /** Current progress value. Clamped between `0` and `max`. */
   export let value = 0;
+
+  /** Maximum progress value. Values less than or equal to `0` are treated as `1`. */
   export let max = 100;
+
+  /** Progress bar height in CSS pixels. */
   export let height = 18;
+
+  /** Optional native tooltip text shown on hover. */
   export let title = '';
+
+  /** Accessible label announced by assistive technologies. */
   export let ariaLabel = 'Progress';
 
   $: safeMax = max > 0 ? max : 1;

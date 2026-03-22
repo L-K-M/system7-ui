@@ -11,21 +11,46 @@
     ariaLabel?: string;
   };
 
+  /**
+   * Column metadata used to render the table structure and default header row.
+   * When a custom `header` slot is provided, this still controls `<colgroup>` widths/classes.
+   */
   export let columns: DataTableColumn[] = [];
+
+  /** Active sort column key. Set `null` when no column is actively sorted. */
   export let sortKey: string | null = null;
+
+  /** Sort direction used with `sortKey`. */
   export let sortDirection: 'asc' | 'desc' = 'asc';
+
+  /** Callback fired when a sortable header is activated. */
   export let onSort: ((key: string) => void) | undefined = undefined;
 
+  /** Whether the table should show the loading placeholder row. */
   export let loading = false;
+
+  /** Loading placeholder text shown when `loading` is true. */
   export let loadingText = 'Loading...';
+
+  /** Whether the table should show the empty placeholder row. */
   export let empty = false;
+
+  /** Empty placeholder text shown when `empty` is true. */
   export let emptyText = 'No items.';
+
+  /** Custom colspan for placeholder rows. Defaults to `columns.length` (or `1` when empty). */
   export let emptyColspan: number | null = null;
 
+  /** Extra class names applied to the fixed header container. */
   export let headerClass = '';
+
+  /** Extra class names applied to the scrollable body container. */
   export let bodyClass = '';
+
+  /** Extra class names applied to both internal `<table>` elements. */
   export let tableClass = '';
 
+  /** Additional CSS classes applied to the root table wrapper. */
   let className = '';
   export { className as class };
 
