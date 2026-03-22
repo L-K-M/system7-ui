@@ -41,7 +41,6 @@ import type ProgressBarComponent from './components/ProgressBar.svelte';
 import type RadioComponent from './components/Radio.svelte';
 import type TitleBarComponent from './components/TitleBar.svelte';
 import type TrashIconComponent from './components/TrashIcon.svelte';
-import type { System7ColorVariables, System7SystemColors } from './theme';
 
 export type BalloonHelpProps = ComponentProps<BalloonHelpComponent>;
 export type ButtonProps = ComponentProps<ButtonComponent>;
@@ -63,4 +62,4 @@ export type ProgressBarProps = ComponentProps<ProgressBarComponent>;
 export type RadioProps = ComponentProps<RadioComponent>;
 export type TitleBarProps = ComponentProps<TitleBarComponent>;
 export type TrashIconProps = ComponentProps<TrashIconComponent>;
-export type { System7ColorVariables, System7SystemColors };
+export type { System7ColorVariables, System7SystemColors } from './theme';
