@@ -245,12 +245,15 @@
     border: none;
     background: transparent;
     color: inherit;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
     font-family: inherit;
     font-size: inherit;
     font-weight: inherit;
     letter-spacing: inherit;
     line-height: inherit;
-    padding: 0;
+    padding: 0 0 0 1px;
     cursor: pointer;
     text-decoration: none;
     max-width: 100%;
@@ -266,7 +269,10 @@
   }
 
   .s7-data-table-header-text {
-    display: inline-block;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding-left: 1px;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
