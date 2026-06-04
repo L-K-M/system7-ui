@@ -4,6 +4,9 @@ Reusable System 7 visual components for Svelte/Tauri apps.
 
 ![Preview of components](./screenshot.png)
 
+> [!IMPORTANT]
+> LLM Disclosure: This package was developed with the assistance of large language models (AI coding tools).
+
 ## Install
 
 ```bash
