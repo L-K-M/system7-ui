@@ -251,12 +251,12 @@ bomb dialog with the original "ID = -37" error codes) would be a fun nod.
 To keep PRs conflict-free, changes are grouped so that **each source file
 is touched by exactly one PR**:
 
-| PR             | Scope                                                                                          | Files                                                                              |
-| -------------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| this PR        | `awesome.md` review document                                                                   | `awesome.md`                                                                       |
-| dialogs        | Items 1, 2, 14, 20 — Escape-to-close, focus trap, default-button Enter, decorative bomb        | `ModalDialog.svelte`, `MovableDialog.svelte`, `ConfirmDialog.svelte`, dialog tests |
-| balloon        | Items 3, 7 (balloon half), 15 — timer cleanup, focus/Escape support, code font, reduced motion | `BalloonHelp.svelte`, new test                                                     |
-| notifications  | Items 5, 6, 7 (notification half), 15, 21 — index fix, live-region roles, dismiss button       | `Notification.svelte`, test                                                        |
-| progress       | Item 19 — indeterminate barber-pole                                                            | `ProgressBar.svelte`, test                                                         |
-| small-fixes    | Items 4, 9 — TitleBar gradient fallbacks, shorthand hex                                        | `TitleBar.svelte`, `theme.ts`, tests                                               |
-| new-components | Items 18, 25 — `TextInput`, `SystemErrorDialog`                                                | new component files, `index.ts`, `README.md`, `docs/COMPONENTS.md`, tests          |
+| PR  | Scope                                                                                          | Files                                                                              |
+| --- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| #1  | `awesome.md` review document (this PR)                                                         | `awesome.md`                                                                       |
+| #2  | Items 1, 2, 14, 20 — Escape-to-close, focus trap, default-button Enter, decorative bomb        | `ModalDialog.svelte`, `MovableDialog.svelte`, `ConfirmDialog.svelte`, dialog tests |
+| #3  | Items 3, 7 (balloon half), 15 — timer cleanup, focus/Escape support, code font, reduced motion | `BalloonHelp.svelte`, new test                                                     |
+| #4  | Items 5, 6, 7 (notification half), 15, 21 — index fix, live-region roles, dismiss button       | `Notification.svelte`, test                                                        |
+| #5  | Item 19 — indeterminate barber-pole                                                            | `ProgressBar.svelte`, test                                                         |
+| #6  | Items 4, 9 — TitleBar gradient fallbacks, shorthand hex                                        | `TitleBar.svelte`, `theme.ts`, tests                                               |
+| #7  | Items 18, 25 — `TextInput`, `SystemErrorDialog`                                                | new component files, `index.ts`, `README.md`, `docs/COMPONENTS.md`, tests          |
