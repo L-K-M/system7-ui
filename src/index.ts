@@ -26,7 +26,9 @@ export { default as PresentationFileIcon } from './components/PresentationFileIc
 export { default as ProgressBar } from './components/ProgressBar.svelte';
 export { default as Radio } from './components/Radio.svelte';
 export { default as SpreadsheetFileIcon } from './components/SpreadsheetFileIcon.svelte';
+export { default as SystemErrorDialog } from './components/SystemErrorDialog.svelte';
 export { default as TextFileIcon } from './components/TextFileIcon.svelte';
+export { default as TextInput } from './components/TextInput.svelte';
 export { default as TitleBar } from './components/TitleBar.svelte';
 export { default as TrashIcon } from './components/TrashIcon.svelte';
 export { default as VideoFileIcon } from './components/VideoFileIcon.svelte';
@@ -61,7 +63,9 @@ import type PresentationFileIconComponent from './components/PresentationFileIco
 import type ProgressBarComponent from './components/ProgressBar.svelte';
 import type RadioComponent from './components/Radio.svelte';
 import type SpreadsheetFileIconComponent from './components/SpreadsheetFileIcon.svelte';
+import type SystemErrorDialogComponent from './components/SystemErrorDialog.svelte';
 import type TextFileIconComponent from './components/TextFileIcon.svelte';
+import type TextInputComponent from './components/TextInput.svelte';
 import type TitleBarComponent from './components/TitleBar.svelte';
 import type TrashIconComponent from './components/TrashIcon.svelte';
 import type VideoFileIconComponent from './components/VideoFileIcon.svelte';
@@ -94,7 +98,9 @@ export type PresentationFileIconProps = ComponentProps<PresentationFileIconCompo
 export type ProgressBarProps = ComponentProps<ProgressBarComponent>;
 export type RadioProps = ComponentProps<RadioComponent>;
 export type SpreadsheetFileIconProps = ComponentProps<SpreadsheetFileIconComponent>;
+export type SystemErrorDialogProps = ComponentProps<SystemErrorDialogComponent>;
 export type TextFileIconProps = ComponentProps<TextFileIconComponent>;
+export type TextInputProps = ComponentProps<TextInputComponent>;
 export type TitleBarProps = ComponentProps<TitleBarComponent>;
 export type TrashIconProps = ComponentProps<TrashIconComponent>;
 export type VideoFileIconProps = ComponentProps<VideoFileIconComponent>;
