@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   import MarkdownIt from 'markdown-it';
 
   /** Tooltip content shown when hovering the wrapped element. */
@@ -7,7 +8,7 @@
   /** Preferred tooltip side relative to the wrapped element. */
   export let position: 'top' | 'bottom' = 'bottom';
 
-  /** Delay in milliseconds before the tooltip appears on hover. */
+  /** Delay in milliseconds before the tooltip appears on hover or focus. */
   export let delay = 1000;
 
   /** Enables Markdown rendering for `message` when `true`. */
@@ -55,8 +56,12 @@
     }
   }
 
-  function handleMouseEnter() {
+  function scheduleShow() {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
     timeoutId = setTimeout(() => {
+      timeoutId = null;
       showBalloon = true;
       requestAnimationFrame(() => {
         adjustBalloonPosition();
@@ -64,7 +69,7 @@
     }, delay);
   }
 
-  function handleMouseLeave() {
+  function hide() {
     if (timeoutId) {
       clearTimeout(timeoutId);
       timeoutId = null;
@@ -74,6 +79,27 @@
     verticalOffset = 0;
     adjustedPosition = position;
   }
+
+  function handleFocusOut(event: FocusEvent) {
+    const next = event.relatedTarget as Node | null;
+    if (next && containerElement?.contains(next)) {
+      return;
+    }
+    hide();
+  }
+
+  function handleWindowKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape' && (showBalloon || timeoutId)) {
+      hide();
+    }
+  }
+
+  onDestroy(() => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  });
 
   function handleWindowResize() {
     if (!showBalloon) {
@@ -174,14 +200,16 @@
   }
 </script>
 
-<svelte:window on:resize={handleWindowResize} />
+<svelte:window on:resize={handleWindowResize} on:keydown={handleWindowKeydown} />
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   class="balloon-container"
   bind:this={containerElement}
-  on:mouseenter={handleMouseEnter}
-  on:mouseleave={handleMouseLeave}
+  on:mouseenter={scheduleShow}
+  on:mouseleave={hide}
+  on:focusin={scheduleShow}
+  on:focusout={handleFocusOut}
 >
   <!-- @slot default - Trigger element that shows help text on hover. -->
   <slot />
@@ -204,6 +232,7 @@
     <div
       class="balloon {adjustedPosition}"
       bind:this={balloonElement}
+      role="tooltip"
       style="transform: translateX(calc(-50% + {horizontalOffset}px)) translateY({verticalOffset}px);"
     >
       {#if markdown}
@@ -275,8 +304,9 @@
     padding-left: 1.2em;
   }
 
+  /* !important so the rule survives the `.s7-root *` font override in system7.css */
   .balloon-content.markdown-content :global(code) {
-    font-family: 'Monaco', 'Andale Mono', 'Courier New', monospace;
+    font-family: 'Monaco', 'Andale Mono', 'Courier New', monospace !important;
   }
 
   .balloon.bottom {
@@ -293,6 +323,12 @@
     }
     to {
       opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .balloon {
+      animation: none;
     }
   }
 </style>
