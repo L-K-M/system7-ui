@@ -14,6 +14,12 @@
   /** Accessible label announced by assistive technologies. */
   export let ariaLabel = 'Progress';
 
+  /**
+   * Shows the classic System 7 barber-pole animation for unknown progress.
+   * `value`/`max` are ignored while `true`.
+   */
+  export let indeterminate = false;
+
   $: safeMax = max > 0 ? max : 1;
   $: clampedValue = Math.min(Math.max(value, 0), safeMax);
   $: percent = (clampedValue / safeMax) * 100;
@@ -26,10 +32,14 @@
   aria-label={ariaLabel}
   aria-valuemin={0}
   aria-valuemax={safeMax}
-  aria-valuenow={Math.round(clampedValue)}
+  aria-valuenow={indeterminate ? undefined : Math.round(clampedValue)}
   style={`height: ${height}px;`}
 >
-  <div class="fill" style={`width: ${percent}%;`}></div>
+  {#if indeterminate}
+    <div class="fill indeterminate"></div>
+  {:else}
+    <div class="fill" style={`width: ${percent}%;`}></div>
+  {/if}
 </div>
 
 <style>
@@ -45,5 +55,32 @@
     height: 100%;
     position: relative;
     background: var(--system7-color-progress-fill, #7a7a7a);
+  }
+
+  .fill.indeterminate {
+    width: 100%;
+    background: repeating-linear-gradient(
+      -45deg,
+      var(--system7-color-progress-fill, #7a7a7a) 0 8px,
+      var(--system7-color-progress-track, #bdc7ff) 8px 16px
+    );
+    /* One stripe period (16px along the gradient axis) projected onto the
+       x-axis at 45 degrees: 16 * sqrt(2) ~= 22.63px. */
+    animation: sys7-barber-pole 0.6s linear infinite;
+  }
+
+  @keyframes sys7-barber-pole {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 22.63px 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fill.indeterminate {
+      animation: none;
+    }
   }
 </style>

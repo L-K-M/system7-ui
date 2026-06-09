@@ -57,4 +57,37 @@ describe('ProgressBar', () => {
     expect(progressBar.getAttribute('aria-valuenow')).toBe('0');
     expect(fill.style.width).toBe('0%');
   });
+
+  it('omits aria-valuenow and fills the track when indeterminate', () => {
+    render(ProgressBar, {
+      props: {
+        indeterminate: true,
+        value: 42
+      }
+    });
+
+    const progressBar = screen.getByRole('progressbar') as HTMLDivElement;
+    const fill = progressBar.querySelector('.fill') as HTMLDivElement;
+
+    expect(progressBar.hasAttribute('aria-valuenow')).toBe(false);
+    expect(fill.classList.contains('indeterminate')).toBe(true);
+    expect(fill.style.width).toBe('');
+  });
+
+  it('reports aria-valuenow again when indeterminate is turned off', async () => {
+    const { rerender } = render(ProgressBar, {
+      props: {
+        indeterminate: true,
+        value: 42
+      }
+    });
+
+    await rerender({ indeterminate: false, value: 42 });
+
+    const progressBar = screen.getByRole('progressbar') as HTMLDivElement;
+    const fill = progressBar.querySelector('.fill') as HTMLDivElement;
+
+    expect(progressBar.getAttribute('aria-valuenow')).toBe('42');
+    expect(fill.style.width).toBe('42%');
+  });
 });
