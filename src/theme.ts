@@ -17,13 +17,20 @@ export interface System7ColorVariables {
 }
 
 const HEX_COLOR_PATTERN = /^#[0-9a-fA-F]{6}$/;
+const SHORT_HEX_COLOR_PATTERN = /^#[0-9a-fA-F]{3}$/;
 
 function normalizeHexColor(value: string | null | undefined): string | null {
   if (!value) {
     return null;
   }
 
-  const normalized = value.trim();
+  let normalized = value.trim();
+
+  if (SHORT_HEX_COLOR_PATTERN.test(normalized)) {
+    const [r, g, b] = normalized.slice(1);
+    normalized = `#${r}${r}${g}${g}${b}${b}`;
+  }
+
   if (!HEX_COLOR_PATTERN.test(normalized)) {
     return null;
   }
