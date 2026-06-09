@@ -2,6 +2,7 @@
   import { onMount, onDestroy, tick } from 'svelte';
   import ErrorBoundary from './ErrorBoundary.svelte';
   import TitleBar from './TitleBar.svelte';
+  import { trapFocus } from '../focus-trap';
 
   /** Window title text rendered in the title bar. */
   export let title: string;
@@ -27,6 +28,15 @@
     if (onclose) {
       onclose();
     }
+  }
+
+  function handleDialogKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      close();
+    } else if (e.key === 'Tab') {
+      trapFocus(dialogElement, e);
+    }
+    e.stopPropagation();
   }
 
   function toggleCollapse() {
@@ -152,7 +162,7 @@
   class="s7-backdrop"
   onclick={close}
   onkeydown={(e) => {
-    if (e.key === 'Enter' || e.key === ' ') close();
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') close();
   }}
   role="button"
   tabindex="0"
@@ -166,7 +176,7 @@
       ? `position: fixed; left: ${position.x}px; top: ${position.y}px; transform: none;`
       : ''}"
     onclick={(e) => e.stopPropagation()}
-    onkeydown={(e) => e.stopPropagation()}
+    onkeydown={handleDialogKeydown}
     role="dialog"
     aria-modal="true"
     tabindex="-1"

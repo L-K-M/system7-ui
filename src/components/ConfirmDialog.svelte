@@ -29,11 +29,22 @@
       oncancel();
     }
   }
+
+  function handleKeydown(e: KeyboardEvent) {
+    // Enter activates the outlined default button, System 7 style — unless
+    // focus is on a button, which keeps its own native Enter activation.
+    if (e.key === 'Enter' && !(e.target instanceof HTMLButtonElement)) {
+      e.preventDefault();
+      handleOk();
+    }
+  }
 </script>
+
+<svelte:window on:keydown|capture={handleKeydown} />
 
 <ModalDialog width="400px" onclose={handleCancel}>
   <div class="confirm-content">
-    <img src={bombIcon} alt="Bomb" class="bomb-icon" />
+    <img src={bombIcon} alt="" class="bomb-icon" />
     <p class="message dialog-text">{message}</p>
   </div>
   <div class="button-row">

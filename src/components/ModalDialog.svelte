@@ -2,6 +2,7 @@
   import { onMount, tick } from 'svelte';
   import ErrorBoundary from './ErrorBoundary.svelte';
   import frameParts from '../assets/modal_frame_parts.png';
+  import { trapFocus } from '../focus-trap';
 
   /** CSS width value applied to the modal frame. */
   export let width = '400px';
@@ -16,6 +17,15 @@
     if (onclose) {
       onclose();
     }
+  }
+
+  function handleDialogKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      close();
+    } else if (e.key === 'Tab') {
+      trapFocus(dialogElement, e);
+    }
+    e.stopPropagation();
   }
 
   onMount(() => {
@@ -34,7 +44,7 @@
   class="s7-backdrop"
   onclick={close}
   onkeydown={(e) => {
-    if (e.key === 'Enter' || e.key === ' ') close();
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') close();
   }}
   role="button"
   tabindex="0"
@@ -45,7 +55,7 @@
     class="s7-fixed-dialog"
     style="width: {width}; border-image-source: url({frameParts});"
     onclick={(e) => e.stopPropagation()}
-    onkeydown={(e) => e.stopPropagation()}
+    onkeydown={handleDialogKeydown}
     role="dialog"
     aria-modal="true"
     tabindex="-1"

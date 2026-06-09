@@ -59,6 +59,59 @@ describe('ConfirmDialog', () => {
     expect(handleCancel).toHaveBeenCalledTimes(1);
   });
 
+  it('calls onconfirm when Enter is pressed with focus on the dialog', async () => {
+    const handleConfirm = vi.fn();
+    const handleCancel = vi.fn();
+
+    render(ConfirmDialog, {
+      props: {
+        message: 'Proceed?',
+        onconfirm: handleConfirm,
+        oncancel: handleCancel
+      }
+    });
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Enter' });
+
+    expect(handleConfirm).toHaveBeenCalledTimes(1);
+    expect(handleCancel).not.toHaveBeenCalled();
+  });
+
+  it('does not hijack Enter when a button has focus', async () => {
+    const handleConfirm = vi.fn();
+
+    render(ConfirmDialog, {
+      props: {
+        message: 'Proceed?',
+        onconfirm: handleConfirm
+      }
+    });
+
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
+    cancelButton.focus();
+    await fireEvent.keyDown(cancelButton, { key: 'Enter' });
+
+    expect(handleConfirm).not.toHaveBeenCalled();
+  });
+
+  it('calls oncancel when Escape is pressed', async () => {
+    const handleCancel = vi.fn();
+
+    render(ConfirmDialog, {
+      props: {
+        message: 'Proceed?',
+        oncancel: handleCancel
+      }
+    });
+
+    await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+
+    expect(handleCancel).toHaveBeenCalledTimes(1);
+  });
+
   it('calls oncancel when modal close button is clicked', async () => {
     const handleCancel = vi.fn();
 
