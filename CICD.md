@@ -17,7 +17,7 @@ publishes `@lkmc/system7-ui` to npm.
 
 Runs on `ubuntu-latest` with Node 20 (npm cache enabled) on every push and pull request:
 
-1. **Checkout** – `actions/checkout@v4`.
+1. **Checkout** – `actions/checkout@v5`.
 2. **Setup Node** – Node 20 with `cache: npm` for faster installs.
 3. **Install dependencies** – `npm ci` (clean, lockfile-exact install).
 4. **Type check** – `npm run check` (`svelte-kit sync` + `svelte-check`).
