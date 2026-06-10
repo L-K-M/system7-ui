@@ -32,4 +32,26 @@ describe('ModalDialog', () => {
 
     expect(handleClose).not.toHaveBeenCalled();
   });
+
+  it('calls onclose when Escape is pressed inside the dialog', async () => {
+    const handleClose = vi.fn();
+
+    render(ModalDialog, { props: { onclose: handleClose } });
+
+    await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps focus on the dialog when Tab is pressed with no focusable children', async () => {
+    render(ModalDialog);
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const dialog = screen.getByRole('dialog');
+    await fireEvent.keyDown(dialog, { key: 'Tab' });
+
+    expect(document.activeElement).toBe(dialog);
+  });
 });

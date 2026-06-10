@@ -79,4 +79,34 @@ describe('MovableDialog', () => {
     expect(style.includes('left:')).toBe(true);
     expect(style.includes('top:')).toBe(true);
   });
+
+  it('calls onclose when Escape is pressed inside the dialog', async () => {
+    const handleClose = vi.fn();
+
+    render(MovableDialog, {
+      props: {
+        title: 'Host details',
+        onclose: handleClose
+      }
+    });
+
+    await fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+
+    expect(handleClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('wraps Shift+Tab from the dialog to the last focusable control', async () => {
+    const { container } = render(MovableDialog, {
+      props: { title: 'Host details' }
+    });
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const dialog = screen.getByRole('dialog');
+    await fireEvent.keyDown(dialog, { key: 'Tab', shiftKey: true });
+
+    const shadeButton = container.querySelector('.shade-box') as HTMLElement;
+    expect(document.activeElement).toBe(shadeButton);
+  });
 });
