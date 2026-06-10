@@ -35,6 +35,18 @@ describe('system color helpers', () => {
     });
   });
 
+  it('expands shorthand hex colors', () => {
+    const variables = getSystem7ColorVariables({
+      accentColor: '#fff',
+      highlightColor: '#3a9'
+    });
+
+    expect(variables).toEqual({
+      '--system7-color-accent': '#FFFFFF',
+      '--system7-color-highlight': '#33AA99'
+    });
+  });
+
   it('builds inline style strings', () => {
     const style = getSystem7ColorStyle({
       accentColor: '#3366cc',

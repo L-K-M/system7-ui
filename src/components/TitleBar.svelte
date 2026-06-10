@@ -203,8 +203,8 @@
     border: 2px solid var(--system7-color-titlebar, #eee);
     background: linear-gradient(
       135deg,
-      var(--system7-color-titlebar-edge-verydark, #ccccff) 50%,
-      var(--system7-color-titlebar-edge-light, #a3a3d7) 50%
+      var(--system7-color-titlebar-edge-verydark, #333366) 50%,
+      var(--system7-color-titlebar-edge-light, #ccccff) 50%
     );
     z-index: 10;
   }
