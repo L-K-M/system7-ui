@@ -1,6 +1,5 @@
 <script lang="ts">
   import MarkdownIt from 'markdown-it';
-  import CloseIcon from './CloseIcon.svelte';
 
   /** Active notification items rendered in a stacked list. */
   export let notifications: { id: number; message: string; type: 'success' | 'error' | 'info' }[] =
@@ -60,7 +59,10 @@
         aria-label="Dismiss notification"
         onclick={() => ondismiss?.(notification.id)}
       >
-        <CloseIcon alt="" size={14} />
+        <svg viewBox="0 0 10 10" width="10" height="10" focusable="false" aria-hidden="true">
+          <line x1="1" y1="1" x2="9" y2="9" stroke="currentColor" stroke-width="1.5" />
+          <line x1="9" y1="1" x2="1" y2="9" stroke="currentColor" stroke-width="1.5" />
+        </svg>
       </button>
     {/if}
   </div>
@@ -122,6 +124,7 @@
     font-family: 'Monaco', 'Andale Mono', 'Courier New', monospace !important;
   }
 
+  /* Close-box style dismiss control, matching the TextInput clear box. */
   .dismiss-button {
     pointer-events: auto;
     flex-shrink: 0;
@@ -129,9 +132,9 @@
     border: 1px solid var(--system7-color-ink, #000);
     color: var(--system7-color-ink, #000);
     cursor: pointer;
-    width: 20px;
-    height: 20px;
-    padding: 2px;
+    width: 16px;
+    height: 16px;
+    padding: 0;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -139,10 +142,16 @@
 
   .dismiss-button:active {
     background: var(--system7-color-accent, #000);
+    color: var(--system7-color-accent-text, #fff);
   }
 
-  .dismiss-button:active :global(img) {
-    filter: var(--system7-close-icon-filter, invert(1));
+  .dismiss-button:focus {
+    outline: 1px dotted var(--system7-color-focus-ring, var(--system7-color-accent, #000));
+    outline-offset: 1px;
+  }
+
+  .dismiss-button svg {
+    display: block;
   }
 
   @keyframes fadeIn {
