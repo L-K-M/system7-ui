@@ -288,8 +288,10 @@ Props:
 - `readonly` (`boolean`, default `false`)
 - `id`, `name`, `placeholder`, `title` (`string`, default `''`)
 - `ariaLabel` (`string`, default `''`): accessible label when no visible `<label>` is used
+- `clearable` (`boolean`, default `false`): shows a close-box style clear control while the field has content
 - `oninput` (`(value: string, e: Event) => void`): fired on every keystroke
 - `onchange` (`(value: string, e: Event) => void`): fired when the value is committed
+- `onclear` (`() => void`): fired after the clear control empties the field
 
 ## SystemErrorDialog
 

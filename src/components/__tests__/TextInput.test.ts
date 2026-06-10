@@ -72,4 +72,57 @@ describe('TextInput', () => {
     const input = container.querySelector('input') as HTMLInputElement;
     expect(input.type).toBe('password');
   });
+
+  it('shows no clear control by default', () => {
+    render(TextInput, {
+      props: { ariaLabel: 'Name', value: 'Macintosh' }
+    });
+
+    expect(screen.queryByRole('button', { name: 'Clear text' })).toBeNull();
+  });
+
+  it('shows the clear control only once the field has content', async () => {
+    render(TextInput, {
+      props: { ariaLabel: 'Name', clearable: true }
+    });
+
+    expect(screen.queryByRole('button', { name: 'Clear text' })).toBeNull();
+
+    const input = screen.getByRole('textbox', { name: 'Name' }) as HTMLInputElement;
+    await fireEvent.input(input, { target: { value: 'Quadra' } });
+
+    expect(screen.queryByRole('button', { name: 'Clear text' })).not.toBeNull();
+  });
+
+  it('clears the field, refocuses the input, and fires onclear', async () => {
+    const handleClear = vi.fn();
+
+    render(TextInput, {
+      props: { ariaLabel: 'Name', clearable: true, value: 'Centris', onclear: handleClear }
+    });
+
+    const input = screen.getByRole('textbox', { name: 'Name' }) as HTMLInputElement;
+    await fireEvent.click(screen.getByRole('button', { name: 'Clear text' }));
+
+    expect(input.value).toBe('');
+    expect(document.activeElement).toBe(input);
+    expect(handleClear).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('button', { name: 'Clear text' })).toBeNull();
+  });
+
+  it('hides the clear control while disabled or readonly', async () => {
+    const { rerender } = render(TextInput, {
+      props: { ariaLabel: 'Name', clearable: true, value: 'LC III', disabled: true }
+    });
+
+    expect(screen.queryByRole('button', { name: 'Clear text' })).toBeNull();
+
+    await rerender({ disabled: false, readonly: true });
+
+    expect(screen.queryByRole('button', { name: 'Clear text' })).toBeNull();
+
+    await rerender({ readonly: false });
+
+    expect(screen.queryByRole('button', { name: 'Clear text' })).not.toBeNull();
+  });
 });

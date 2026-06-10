@@ -123,8 +123,10 @@ For apps that fetch OS colors at runtime, use utility exports:
   - `placeholder`: `string`
   - `title`: `string`
   - `ariaLabel`: `string`
+  - `clearable`: `boolean` (shows a close-box style clear control while the field has content)
   - `oninput`: `(value: string, e: Event) => void`
   - `onchange`: `(value: string, e: Event) => void`
+  - `onclear`: `() => void`
 
 ### SystemErrorDialog
 
