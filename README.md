@@ -114,7 +114,9 @@ Import components from the package root:
 - `ProgressBar`
 - `Radio`
 - `SpreadsheetFileIcon`
+- `SystemErrorDialog`
 - `TextFileIcon`
+- `TextInput`
 - `TitleBar`
 - `TrashIcon`
 - `VideoFileIcon`
@@ -273,6 +275,34 @@ Props:
 Slots:
 
 - `default`: label content shown to the right of the radio icon
+
+## TextInput
+
+`TextInput` is a System 7 styled single-line text field.
+
+Props:
+
+- `value` (`string`, default `''`): current value, supports `bind:value`
+- `type` (`'text' | 'password' | 'email' | 'search' | 'url' | 'tel'`, default `text`)
+- `disabled` (`boolean`, default `false`)
+- `readonly` (`boolean`, default `false`)
+- `id`, `name`, `placeholder`, `title` (`string`, default `''`)
+- `ariaLabel` (`string`, default `''`): accessible label when no visible `<label>` is used
+- `clearable` (`boolean`, default `false`): shows a close-box style clear control while the field has content
+- `oninput` (`(value: string, e: Event) => void`): fired on every keystroke
+- `onchange` (`(value: string, e: Event) => void`): fired when the value is committed
+- `onclear` (`() => void`): fired after the clear control empties the field
+
+## SystemErrorDialog
+
+`SystemErrorDialog` renders the classic System 7 bomb alert ("Sorry, a system error occurred.") — ideal as a themed fatal-error screen or an `ErrorBoundary` fallback.
+
+Props:
+
+- `message` (`string`, default `'Sorry, a system error occurred.'`)
+- `detail` (`string`, default `''`): optional secondary line (e.g. `unimplemented trap`)
+- `restartText` (`string`, default `'Restart'`)
+- `onrestart` (`() => void`): fired when the restart button is clicked
 
 ## ErrorBoundary
 

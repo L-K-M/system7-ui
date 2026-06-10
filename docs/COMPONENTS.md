@@ -111,6 +111,33 @@ For apps that fetch OS colors at runtime, use utility exports:
 - Slot:
   - `default`: label content
 
+### TextInput
+
+- Props:
+  - `value`: `string` (supports `bind:value`)
+  - `type`: `'text' | 'password' | 'email' | 'search' | 'url' | 'tel'`
+  - `disabled`: `boolean`
+  - `readonly`: `boolean`
+  - `id`: `string`
+  - `name`: `string`
+  - `placeholder`: `string`
+  - `title`: `string`
+  - `ariaLabel`: `string`
+  - `clearable`: `boolean` (shows a close-box style clear control while the field has content)
+  - `oninput`: `(value: string, e: Event) => void`
+  - `onchange`: `(value: string, e: Event) => void`
+  - `onclear`: `() => void`
+
+### SystemErrorDialog
+
+- Props:
+  - `message`: `string` (defaults to `'Sorry, a system error occurred.'`)
+  - `detail`: `string` (optional secondary line)
+  - `restartText`: `string` (defaults to `'Restart'`)
+  - `onrestart`: `() => void`
+- Notes:
+  - Renders the classic System 7 bomb alert; works well as an `ErrorBoundary` fallback.
+
 ### ModalDialog
 
 - Props:
