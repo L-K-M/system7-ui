@@ -27,7 +27,9 @@
     ProgressBar,
     Radio,
     SpreadsheetFileIcon,
+    SystemErrorDialog,
     TextFileIcon,
+    TextInput,
     TitleBar,
     TrashIcon,
     VideoFileIcon
@@ -42,11 +44,15 @@
   );
   let notificationId = $state(1);
   let installProgress = $state(78);
+  let progressIndeterminate = $state(false);
+  let hostNameInput = $state('Macintosh IIfx');
+  let sharePasswordInput = $state('');
 
   let showError = $state(false);
   let showModal = $state(false);
   let showMovable = $state(false);
   let showConfirm = $state(false);
+  let showSystemError = $state(false);
   let themeSectionExpanded = $state(true);
   let demoWindowHeight = $state<number | null>(null);
 
@@ -153,8 +159,12 @@
     const id = notificationId++;
     notifications = [...notifications, { id, message: `${label}: sample message`, type }];
     setTimeout(() => {
-      notifications = notifications.filter((item) => item.id !== id);
-    }, 2500);
+      dismissNotification(id);
+    }, 4000);
+  }
+
+  function dismissNotification(id: number) {
+    notifications = notifications.filter((item) => item.id !== id);
   }
 
   function bumpProgress(delta: number) {
@@ -279,7 +289,7 @@
 </script>
 
 <div class="desktop s7-root" style={getDemoThemeStyle()}>
-  <Notification {notifications} markdown />
+  <Notification {notifications} markdown ondismiss={dismissNotification} />
 
   <div
     class="s7-window-frame demo-window"
@@ -493,20 +503,61 @@
       </section>
 
       <section class="panel">
+        <h3>TextInput</h3>
+        <div class="field-row">
+          <label class="field-label" for="host-name">Host name</label>
+          <TextInput
+            id="host-name"
+            bind:value={hostNameInput}
+            clearable
+            placeholder="Untitled"
+            title="Clearable text input"
+          />
+        </div>
+        <div class="field-row">
+          <label class="field-label" for="share-password">Password</label>
+          <TextInput
+            id="share-password"
+            type="password"
+            bind:value={sharePasswordInput}
+            clearable
+            placeholder="Required"
+          />
+        </div>
+        <div class="field-row">
+          <label class="field-label" for="locked-input">Read only</label>
+          <TextInput id="locked-input" value="System Folder" readonly />
+        </div>
+        <p class="theme-note">The close-box control appears once a clearable field has content.</p>
+      </section>
+
+      <section class="panel">
         <h3>ProgressBar</h3>
         <div class="progress-preview">
           <ProgressBar
             value={installProgress}
-            title={`Save progress: ${installProgress}%`}
+            indeterminate={progressIndeterminate}
+            title={progressIndeterminate ? 'Working…' : `Save progress: ${installProgress}%`}
             ariaLabel="Save progress"
           />
         </div>
         <div class="row progress-controls">
-          <Button onclick={() => bumpProgress(-10)}>-10%</Button>
-          <Button onclick={() => bumpProgress(10)}>+10%</Button>
-          <Button onclick={() => (installProgress = 0)}>Reset</Button>
-          <Button onclick={() => (installProgress = 100)}>Complete</Button>
-          <span class="progress-value">{installProgress}%</span>
+          <Button onclick={() => bumpProgress(-10)} disabled={progressIndeterminate}>-10%</Button>
+          <Button onclick={() => bumpProgress(10)} disabled={progressIndeterminate}>+10%</Button>
+          <Button onclick={() => (installProgress = 0)} disabled={progressIndeterminate}
+            >Reset</Button
+          >
+          <Button onclick={() => (installProgress = 100)} disabled={progressIndeterminate}
+            >Complete</Button
+          >
+          <span class="progress-value">{progressIndeterminate ? '???' : `${installProgress}%`}</span
+          >
+          <Checkbox
+            checked={progressIndeterminate}
+            onchange={(next) => (progressIndeterminate = next)}
+          >
+            Indeterminate
+          </Checkbox>
         </div>
       </section>
 
@@ -557,7 +608,22 @@
           <Button onclick={() => (showModal = true)}>Show ModalDialog</Button>
           <Button onclick={() => (showMovable = true)}>Show MovableDialog</Button>
           <Button onclick={() => (showConfirm = true)}>Show ConfirmDialog</Button>
+          <Button onclick={() => (showSystemError = !showSystemError)}>
+            {showSystemError ? 'Hide' : 'Show'} SystemErrorDialog
+          </Button>
         </div>
+
+        {#if showSystemError}
+          <div class="system-error-demo">
+            <SystemErrorDialog
+              detail="unimplemented trap"
+              onrestart={() => {
+                showSystemError = false;
+                addNotification('success');
+              }}
+            />
+          </div>
+        {/if}
 
         <div class="row">
           <Button onclick={() => addNotification('info')}>Info Notification</Button>
@@ -857,6 +923,11 @@
     min-height: 0;
     overflow: hidden;
     border: 1px solid var(--system7-color-ink, #000);
+  }
+
+  .system-error-demo {
+    width: min(420px, 100%);
+    margin-top: 10px;
   }
 
   .dialog-copy {
