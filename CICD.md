@@ -41,7 +41,7 @@ npm run test        # vitest run
 ## Releases (`release.yml`)
 
 Releases are cut by pushing a Git tag whose version matches `package.json`. Bump the
-`version` field in `package.json` first (currently `0.1.9`), commit it, then tag and push:
+`version` field in `package.json` first (currently `0.2.1`), commit it, then tag and push:
 
 ```
 git tag v1.2.3

@@ -39,6 +39,20 @@ describe('TextInput', () => {
     expect(handleInput.mock.calls[0][0]).toBe('System 7');
   });
 
+  it('forwards keydown events to the onkeydown callback', async () => {
+    const handleKeydown = vi.fn();
+
+    render(TextInput, {
+      props: { ariaLabel: 'Name', onkeydown: handleKeydown }
+    });
+
+    const input = screen.getByRole('textbox', { name: 'Name' }) as HTMLInputElement;
+    await fireEvent.keyDown(input, { key: 'Enter' });
+
+    expect(handleKeydown).toHaveBeenCalledTimes(1);
+    expect(handleKeydown.mock.calls[0][0].key).toBe('Enter');
+  });
+
   it('fires onchange when the value is committed', async () => {
     const handleChange = vi.fn();
 

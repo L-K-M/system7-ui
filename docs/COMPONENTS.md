@@ -71,6 +71,22 @@ For apps that fetch OS colors at runtime, use utility exports:
 - `applySystem7SystemColors(colors, target?)`
 - `getSystem7ColorVariables(colors)`
 - `getSystem7ColorStyle(colors)`
+- `getSystem7WindowToneVariables(accentColor)` — derives the window chrome tones
+  (`--system7-color-focus-ring`, title bar rail/button and scrollbar variables) from a
+  single accent color, like classic System 7 colored windows
+- `getSystem7WindowStyle(colors)` — inline `style` string combining the system colors
+  with the derived window tones; apply it to the window frame element
+
+```svelte
+<script lang="ts">
+  import { getSystem7WindowStyle } from '@lkmc/system7-ui';
+
+  // e.g. fetched from the OS via a Tauri command
+  const colors = { accent_color: '#6688CC', highlight_color: '#88AA00' };
+</script>
+
+<div class="s7-root" style={getSystem7WindowStyle(colors)}>...</div>
+```
 
 ## Key Components
 
@@ -126,6 +142,7 @@ For apps that fetch OS colors at runtime, use utility exports:
   - `clearable`: `boolean` (shows a close-box style clear control while the field has content)
   - `oninput`: `(value: string, e: Event) => void`
   - `onchange`: `(value: string, e: Event) => void`
+  - `onkeydown`: `(e: KeyboardEvent) => void`
   - `onclear`: `() => void`
 
 ### SystemErrorDialog
@@ -137,6 +154,27 @@ For apps that fetch OS colors at runtime, use utility exports:
   - `onrestart`: `() => void`
 - Notes:
   - Renders the classic System 7 bomb alert; works well as an `ErrorBoundary` fallback.
+
+### Notification
+
+- Props:
+  - `notifications`: `{ id: number; message: string; type: 'success' | 'error' | 'info' }[]`
+  - `markdown`: `boolean`
+  - `ondismiss`: `(id: number) => void` (renders a close button per notification when provided)
+- Notes:
+  - The `createNotificationStore(defaultTimeoutMs?)` export creates the matching store:
+    `add(message, type?, timeoutMs?)` returns the id, plus `remove(id)` and `clear()`.
+    Wire `remove` to `ondismiss` for dismissable notifications.
+
+```svelte
+<script lang="ts">
+  import { Notification, createNotificationStore } from '@lkmc/system7-ui';
+
+  const notifications = createNotificationStore();
+</script>
+
+<Notification notifications={$notifications} ondismiss={(id) => notifications.remove(id)} />
+```
 
 ### ModalDialog
 
