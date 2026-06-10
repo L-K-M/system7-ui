@@ -1,5 +1,6 @@
 <script lang="ts">
   import MarkdownIt from 'markdown-it';
+  import CloseIcon from './CloseIcon.svelte';
 
   /** Active notification items rendered in a stacked list. */
   export let notifications: { id: number; message: string; type: 'success' | 'error' | 'info' }[] =
@@ -7,6 +8,12 @@
 
   /** Enables Markdown rendering for each notification message when `true`. */
   export let markdown = false;
+
+  /**
+   * Optional dismiss callback. When provided, each notification renders a
+   * close button and the callback receives the notification id to remove.
+   */
+  export let ondismiss: ((id: number) => void) | undefined = undefined;
 
   const markdownParser = new MarkdownIt({
     html: false,
@@ -33,12 +40,11 @@
   }
 </script>
 
-{#each notifications as notification (notification.id)}
+{#each notifications as notification, index (notification.id)}
   <div
     class="notification {notification.type}"
-    style="bottom: {20 + notifications.indexOf(notification) * 70}px;"
-    role="alert"
-    aria-live="polite"
+    style="bottom: {20 + index * 70}px;"
+    role={notification.type === 'error' ? 'alert' : 'status'}
   >
     <div class="notification-content">
       {#if markdown}
@@ -47,6 +53,16 @@
         {notification.message}
       {/if}
     </div>
+    {#if ondismiss}
+      <button
+        type="button"
+        class="dismiss-button"
+        aria-label="Dismiss notification"
+        onclick={() => ondismiss?.(notification.id)}
+      >
+        <CloseIcon alt="" size={14} />
+      </button>
+    {/if}
   </div>
 {/each}
 
@@ -101,8 +117,32 @@
     padding-left: 1.2em;
   }
 
+  /* !important so the rule survives the `.s7-root *` font override in system7.css */
   .notification-content :global(code) {
-    font-family: 'Monaco', 'Andale Mono', 'Courier New', monospace;
+    font-family: 'Monaco', 'Andale Mono', 'Courier New', monospace !important;
+  }
+
+  .dismiss-button {
+    pointer-events: auto;
+    flex-shrink: 0;
+    background: var(--system7-color-paper, #fff);
+    border: 1px solid var(--system7-color-ink, #000);
+    color: var(--system7-color-ink, #000);
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dismiss-button:active {
+    background: var(--system7-color-accent, #000);
+  }
+
+  .dismiss-button:active :global(img) {
+    filter: var(--system7-close-icon-filter, invert(1));
   }
 
   @keyframes fadeIn {
@@ -111,6 +151,12 @@
     }
     to {
       opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .notification {
+      animation: none;
     }
   }
 </style>
