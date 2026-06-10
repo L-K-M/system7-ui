@@ -16,6 +16,16 @@ export interface System7ColorVariables {
   '--system7-color-highlight-text'?: string;
 }
 
+export interface System7WindowToneVariables {
+  '--system7-color-focus-ring'?: string;
+  '--system7-color-titlebar-edge-light'?: string;
+  '--system7-color-titlebar-edge-dark'?: string;
+  '--system7-color-titlebar-edge-verydark'?: string;
+  '--system7-color-titlebar-button'?: string;
+  '--system7-color-scrollbar-thumb'?: string;
+  '--system7-color-scrollbar-thumb-line'?: string;
+}
+
 const HEX_COLOR_PATTERN = /^#[0-9a-fA-F]{6}$/;
 const SHORT_HEX_COLOR_PATTERN = /^#[0-9a-fA-F]{3}$/;
 
@@ -66,6 +76,91 @@ export function getSystem7ColorVariables(colors: System7SystemColors): System7Co
 
 export function getSystem7ColorStyle(colors: System7SystemColors): string {
   const variables = getSystem7ColorVariables(colors);
+
+  return Object.entries(variables)
+    .map(([name, value]) => `${name}: ${value}`)
+    .join('; ');
+}
+
+interface RgbColor {
+  r: number;
+  g: number;
+  b: number;
+}
+
+function hexToRgb(value: string): RgbColor {
+  return {
+    r: parseInt(value.slice(1, 3), 16),
+    g: parseInt(value.slice(3, 5), 16),
+    b: parseInt(value.slice(5, 7), 16)
+  };
+}
+
+function rgbToHex({ r, g, b }: RgbColor): string {
+  return `#${[r, g, b]
+    .map((channel) =>
+      Math.max(0, Math.min(255, Math.round(channel)))
+        .toString(16)
+        .padStart(2, '0')
+    )
+    .join('')
+    .toUpperCase()}`;
+}
+
+function mixHexColors(fromHex: string, toHex: string, ratio: number): string {
+  const clampedRatio = Math.max(0, Math.min(1, ratio));
+  const from = hexToRgb(fromHex);
+  const to = hexToRgb(toHex);
+
+  return rgbToHex({
+    r: from.r + (to.r - from.r) * clampedRatio,
+    g: from.g + (to.g - from.g) * clampedRatio,
+    b: from.b + (to.b - from.b) * clampedRatio
+  });
+}
+
+/**
+ * Derives the window chrome tones (title bar rails, title bar buttons and
+ * scrollbar detailing) from a single window accent color, like classic
+ * System 7 colored windows. Returns an empty object when the accent color
+ * is missing or not a valid hex color.
+ *
+ * The focus ring is included because the stylesheet derives
+ * `--system7-color-focus-ring` from the accent at `:root`; re-declaring it
+ * alongside a scoped accent override keeps the two in sync.
+ */
+export function getSystem7WindowToneVariables(
+  accentColor: string | null | undefined
+): System7WindowToneVariables {
+  const normalized = normalizeHexColor(accentColor);
+
+  if (!normalized) {
+    return {};
+  }
+
+  return {
+    '--system7-color-focus-ring': normalized,
+    '--system7-color-titlebar-edge-light': mixHexColors(normalized, '#FFFFFF', 0.55),
+    '--system7-color-titlebar-edge-dark': mixHexColors(normalized, '#000000', 0.25),
+    '--system7-color-titlebar-edge-verydark': mixHexColors(normalized, '#000000', 0.42),
+    '--system7-color-titlebar-button': mixHexColors(normalized, '#FFFFFF', 0.82),
+    '--system7-color-scrollbar-thumb': mixHexColors(normalized, '#FFFFFF', 0.7),
+    '--system7-color-scrollbar-thumb-line': mixHexColors(normalized, '#000000', 0.18)
+  };
+}
+
+/**
+ * Builds an inline `style` attribute value that applies the accent and
+ * highlight colors plus the window tones derived from the accent color.
+ * Intended for a window frame element (e.g. `.s7-root`) themed after the
+ * host OS colors.
+ */
+export function getSystem7WindowStyle(colors: System7SystemColors): string {
+  const accentColor = resolveColorValue(colors, 'accentColor', 'accent_color');
+  const variables: Record<string, string> = {
+    ...getSystem7ColorVariables(colors),
+    ...getSystem7WindowToneVariables(accentColor)
+  };
 
   return Object.entries(variables)
     .map(([name, value]) => `${name}: ${value}`)

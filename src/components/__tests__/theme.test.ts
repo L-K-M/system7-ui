@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest';
 import {
   applySystem7SystemColors,
   getSystem7ColorStyle,
-  getSystem7ColorVariables
+  getSystem7ColorVariables,
+  getSystem7WindowStyle,
+  getSystem7WindowToneVariables
 } from '../../theme';
 
 describe('system color helpers', () => {
@@ -55,6 +57,50 @@ describe('system color helpers', () => {
 
     expect(style).toContain('--system7-color-accent: #3366CC');
     expect(style).toContain('--system7-color-highlight-text: #F0F0F0');
+  });
+
+  it('derives window tones from the accent color', () => {
+    const variables = getSystem7WindowToneVariables('#6688cc');
+
+    expect(variables).toEqual({
+      '--system7-color-focus-ring': '#6688CC',
+      '--system7-color-titlebar-edge-light': '#BAC9E8',
+      '--system7-color-titlebar-edge-dark': '#4D6699',
+      '--system7-color-titlebar-edge-verydark': '#3B4F76',
+      '--system7-color-titlebar-button': '#E3EAF6',
+      '--system7-color-scrollbar-thumb': '#D1DBF0',
+      '--system7-color-scrollbar-thumb-line': '#5470A7'
+    });
+  });
+
+  it('normalizes shorthand accents and rejects invalid ones for window tones', () => {
+    expect(getSystem7WindowToneVariables('#fff')['--system7-color-focus-ring']).toBe('#FFFFFF');
+    expect(getSystem7WindowToneVariables('not-a-color')).toEqual({});
+    expect(getSystem7WindowToneVariables(null)).toEqual({});
+    expect(getSystem7WindowToneVariables(undefined)).toEqual({});
+  });
+
+  it('builds a window style with system colors and derived tones', () => {
+    const style = getSystem7WindowStyle({
+      accent_color: '#6688cc',
+      accent_text_color: '#ffffff',
+      highlight_color: '#88aa00',
+      highlight_text_color: '#000000'
+    });
+
+    expect(style).toContain('--system7-color-accent: #6688CC');
+    expect(style).toContain('--system7-color-highlight: #88AA00');
+    expect(style).toContain('--system7-color-focus-ring: #6688CC');
+    expect(style).toContain('--system7-color-titlebar-edge-light: #BAC9E8');
+    expect(style).toContain('--system7-color-scrollbar-thumb: #D1DBF0');
+  });
+
+  it('omits window tones when no accent color is provided', () => {
+    const style = getSystem7WindowStyle({
+      highlight_color: '#88aa00'
+    });
+
+    expect(style).toBe('--system7-color-highlight: #88AA00');
   });
 
   it('applies and clears CSS variables on the target element', () => {

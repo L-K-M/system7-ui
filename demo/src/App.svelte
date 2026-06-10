@@ -32,7 +32,8 @@
     TextInput,
     TitleBar,
     TrashIcon,
-    VideoFileIcon
+    VideoFileIcon,
+    getSystem7WindowToneVariables
   } from '@lkmc/system7-ui';
 
   let selectedProfile = $state('quick');
@@ -206,39 +207,6 @@
     };
   }
 
-  function rgbToHex({ r, g, b }: RgbColor): string {
-    return `#${[r, g, b]
-      .map((channel) =>
-        Math.max(0, Math.min(255, Math.round(channel)))
-          .toString(16)
-          .padStart(2, '0')
-      )
-      .join('')}`;
-  }
-
-  function mixHexColors(fromHex: string, toHex: string, ratio: number): string {
-    const clampedRatio = Math.max(0, Math.min(1, ratio));
-    const from = hexToRgb(fromHex);
-    const to = hexToRgb(toHex);
-
-    return rgbToHex({
-      r: from.r + (to.r - from.r) * clampedRatio,
-      g: from.g + (to.g - from.g) * clampedRatio,
-      b: from.b + (to.b - from.b) * clampedRatio
-    });
-  }
-
-  function createWindowToneSet(windowColor: string) {
-    return {
-      edgeLight: windowColor,
-      edgeDark: mixHexColors(windowColor, '#000000', 0.25),
-      edgeVeryDark: mixHexColors(windowColor, '#000000', 0.7),
-      scrollbarLine: mixHexColors(windowColor, '#000000', 0.18),
-      scrollbarThumb: mixHexColors(windowColor, '#ffffff', 0.7),
-      titlebarButton: mixHexColors(windowColor, '#ffffff', 0.82)
-    };
-  }
-
   function getReadableTextColor(background: string): string {
     const { r, g, b } = hexToRgb(background);
     const luminance = r * 0.299 + g * 0.587 + b * 0.114;
@@ -251,7 +219,9 @@
   }
 
   function getDemoThemeStyle() {
-    const windowToneSet = createWindowToneSet(accentColor);
+    const windowToneVariables = Object.entries(getSystem7WindowToneVariables(accentColor)).map(
+      ([name, value]) => `${name}: ${value}`
+    );
 
     return [
       `--system7-color-accent: ${accentColor}`,
@@ -260,13 +230,7 @@
       `--system7-color-highlight-text: ${highlightTextColor}`,
       `--system7-color-ink: ${inkColor}`,
       `--system7-color-paper: ${paperColor}`,
-      `--system7-color-focus-ring: ${accentColor}`,
-      `--system7-color-titlebar-edge-light: ${windowToneSet.edgeLight}`,
-      `--system7-color-titlebar-edge-dark: ${windowToneSet.edgeDark}`,
-      `--system7-color-titlebar-edge-verydark: ${windowToneSet.edgeVeryDark}`,
-      `--system7-color-titlebar-button: ${windowToneSet.titlebarButton}`,
-      `--system7-color-scrollbar-thumb-line: ${windowToneSet.scrollbarLine}`,
-      `--system7-color-scrollbar-thumb: ${windowToneSet.scrollbarThumb}`,
+      ...windowToneVariables,
       `--system7-color-progress-track: ${progressTrackColor}`,
       `--system7-color-progress-fill: ${progressFillColor}`
     ].join('; ');

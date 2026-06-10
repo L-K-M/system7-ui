@@ -38,6 +38,9 @@
   /** Change callback fired when the value is committed (blur/Enter). */
   export let onchange: ((value: string, e: Event) => void) | undefined = undefined;
 
+  /** Keydown callback, e.g. for Enter/Escape handling by the host app. */
+  export let onkeydown: ((e: KeyboardEvent) => void) | undefined = undefined;
+
   /** Callback fired after the clear control empties the field. */
   export let onclear: (() => void) | undefined = undefined;
 
@@ -85,6 +88,7 @@
     {value}
     oninput={handleInput}
     onchange={handleChange}
+    {onkeydown}
   />
   {#if showClear}
     <button type="button" class="clear-button" aria-label="Clear text" onclick={handleClear}>

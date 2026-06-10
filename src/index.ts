@@ -32,7 +32,14 @@ export { default as TextInput } from './components/TextInput.svelte';
 export { default as TitleBar } from './components/TitleBar.svelte';
 export { default as TrashIcon } from './components/TrashIcon.svelte';
 export { default as VideoFileIcon } from './components/VideoFileIcon.svelte';
-export { applySystem7SystemColors, getSystem7ColorStyle, getSystem7ColorVariables } from './theme';
+export {
+  applySystem7SystemColors,
+  getSystem7ColorStyle,
+  getSystem7ColorVariables,
+  getSystem7WindowStyle,
+  getSystem7WindowToneVariables
+} from './theme';
+export { createNotificationStore } from './notifications';
 
 import type { ComponentProps } from 'svelte';
 import type ArchiveFileIconComponent from './components/ArchiveFileIcon.svelte';
@@ -104,4 +111,9 @@ export type TextInputProps = ComponentProps<TextInputComponent>;
 export type TitleBarProps = ComponentProps<TitleBarComponent>;
 export type TrashIconProps = ComponentProps<TrashIconComponent>;
 export type VideoFileIconProps = ComponentProps<VideoFileIconComponent>;
-export type { System7ColorVariables, System7SystemColors } from './theme';
+export type {
+  System7ColorVariables,
+  System7SystemColors,
+  System7WindowToneVariables
+} from './theme';
+export type { NotificationItem, NotificationStore, NotificationType } from './notifications';
