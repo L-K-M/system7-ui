@@ -2,6 +2,8 @@
 
 Reusable System 7 visual components for Svelte/Tauri apps.
 
+**Latest release:** [GitHub Release](https://github.com/L-K-M/system7-ui/releases/latest)
+
 ![Preview of components](./screenshot.png)
 
 > [!IMPORTANT]
