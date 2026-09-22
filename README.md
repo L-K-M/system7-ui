@@ -1,5 +1,8 @@
 # @lkmc/system7-ui
 
+> [!IMPORTANT]
+> LLM disclosure: This codebase was written with substantial help from large language models: AI coding agents working from the [`AGENTS.md`](AGENTS.md) brief in this repo.
+
 Reusable System 7 visual components for Svelte/Tauri apps.
 
 **Latest release:** [GitHub Release](https://github.com/L-K-M/system7-ui/releases/latest)
