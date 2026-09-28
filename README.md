@@ -62,6 +62,29 @@ Default accent/highlight tokens automatically fall back to legacy names used in 
 - `--system-highlight-color`
 - `--system-highlight-text-color`
 
+### Typography and Layout Tokens
+
+Override these on `:root`, or on `.s7-root` or any element inside it to change only that subtree:
+
+- `--system7-font-size` (default `24px`): Geneva text inside `.s7-root`.
+- `--system7-control-font-size` (default `18px`): Sysfont text in buttons, checkbox and radio labels, dropdowns, `.dialog-text` and headings.
+- `--system7-safe-area-top`, `--system7-safe-area-right`, `--system7-safe-area-bottom`, `--system7-safe-area-left` (default `env(safe-area-inset-*, 0px)`): insets that keep content clear of the notch, status bar and gesture bar. See [Mobile and touch](#mobile-and-touch).
+- `--system7-scrollbar-size` (default `16px`): width of vertical and height of horizontal scrollbars. Set it on the scrolling element or an ancestor.
+- `--system7-table-cell-padding` (default `5px 8px`): `DataTable` cell padding. Use `12px 8px` for taller touch rows.
+- `--system7-notification-offset-bottom` and `--system7-notification-offset-right` (default `20px`): distance of the `Notification` stack from the bottom and right edges, added to the safe-area insets. The right offset also sets the minimum left margin.
+
+The bundled Geneva font is drawn on a 16px pixel grid: `16px` renders at 1x, `24px` at 1.5x and `32px` at 2x. Other sizes scale its pixels unevenly, and Geneva below `16px` is hard to read on phones. On phones, use `24px` for primary text and `16px` for secondary text.
+
+`.s7-root *` sets every element's font size from the token, so a plain `font-size` on a container does not reach its children. Set the token instead, and use `px`: an `em` or `%` value is resolved again on every nested element and compounds.
+
+```css
+.entry-meta {
+  --system7-font-size: 16px;
+}
+```
+
+`.s7-root` also sets `-webkit-tap-highlight-color: transparent`, so mobile browsers do not flash a translucent box over tapped elements. Components draw their own pressed states.
+
 ### macOS/Tauri System Colors
 
 If your app already retrieves OS colors (for example, through a Tauri command), you can apply them directly with exported helpers:
@@ -88,6 +111,36 @@ Import components from the package root:
   import { Button, TitleBar } from '@lkmc/system7-ui';
 </script>
 ```
+
+## Mobile and touch
+
+Touch support needs no extra props. To lay out a full-screen app on a phone:
+
+1. Add `viewport-fit=cover` to the viewport meta tag. The page can then draw under the notch, status bar and gesture bar, and `env(safe-area-inset-*)` reports their size:
+
+   ```html
+   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+   ```
+
+2. Pad your own fixed or full-height layout with the `--system7-safe-area-*` tokens. `ModalDialog`, `MovableDialog` and `Notification` already stay inside them. If your WebView reports the insets incorrectly, set the tokens yourself, for example from values reported by native code.
+
+   ```css
+   .app-shell {
+     padding-top: var(--system7-safe-area-top);
+     padding-bottom: var(--system7-safe-area-bottom);
+   }
+   ```
+
+3. Size text on the Geneva pixel grid, as described in [Typography and Layout Tokens](#typography-and-layout-tokens).
+
+On touch devices, the components also:
+
+- Give small controls an invisible hit area of at least 44px on coarse pointers (`@media (pointer: coarse)`) without changing how they look or lay out: `Checkbox`, `Radio`, `icon` buttons, the `TextInput` clear box, the `Notification` dismiss box and the `TitleBar` boxes. Hit areas of controls closer than 44px apart overlap and the later control in the DOM wins, so space touch rows at least 44px apart.
+- Widen a clearable `TextInput`'s right padding to 44px while its clear box shows on a coarse pointer, so a tap near the end of the text places the caret instead of clearing the field.
+- Dim `icon` buttons on hover only under `@media (hover: hover)`, so a tap does not leave one dimmed.
+- Keep `BalloonHelp` closed on touch taps. Mouse and pen hover and keyboard focus still open it.
+- Set `touch-action: none` on a draggable `TitleBar`, so a drag moves the window instead of scrolling the page.
+- Limit `ModalDialog` and `MovableDialog` to the safe area and scroll their content when it does not fit. A dragged `MovableDialog` stays inside the safe area, also after the window is resized.
 
 ## Exports
 
@@ -129,8 +182,11 @@ Import components from the package root:
 ### Utility Exports
 
 - `applySystem7SystemColors`
+- `createNotificationStore`
 - `getSystem7ColorStyle`
 - `getSystem7ColorVariables`
+- `getSystem7WindowStyle`
+- `getSystem7WindowToneVariables`
 
 ### Type Exports
 
@@ -207,6 +263,7 @@ Behavior notes:
 
 - Automatically repositions to stay within the viewport bounds.
 - Constrains width/height and wraps long text to avoid screen overflow.
+- Opens on mouse or pen hover and on keyboard focus, but not on touch taps, which have no hover to close it again.
 
 ## Button
 
@@ -219,6 +276,14 @@ Props:
 - `type` (`'button' | 'submit' | 'reset'`, default `button`)
 - `title` (`string`, default `''`)
 - `onclick` (`(e: MouseEvent) => void`)
+
+Other attributes, such as `aria-label`, `data-*`, `name`, `value`, `form` and event handlers like `onfocus`, go to the native `<button>`. A `class` attribute is ignored so the component keeps its own styling hooks.
+
+```svelte
+<Button variant="icon" aria-label="Copy entry" data-entry-id={entry.id} onclick={copy}>
+  <CopyIcon />
+</Button>
+```
 
 Slots:
 
@@ -257,11 +322,12 @@ Common props:
 - `empty` (`boolean`)
 - `emptyText` (`string`)
 - `emptyColspan` (`number | null`)
+- `showHeader` (`boolean`, default `true`): set `false` to drop the header row and the double rule under it, for example in a phone list. `columns` still sets the column widths. Without a header, screen readers get no column names, so make each cell understandable on its own.
 
 Slots:
 
 - `default`: table row markup (`<tr>...</tr>`) for the body
-- `header` (optional): custom `<tr>...</tr>` header when you need advanced layouts
+- `header` (optional): custom `<tr>...</tr>` header when you need advanced layouts. Not rendered when `showHeader` is `false`.
 
 ## Radio
 
@@ -296,7 +362,73 @@ Props:
 - `clearable` (`boolean`, default `false`): shows a close-box style clear control while the field has content
 - `oninput` (`(value: string, e: Event) => void`): fired on every keystroke
 - `onchange` (`(value: string, e: Event) => void`): fired when the value is committed
+- `onkeydown` (`(e: KeyboardEvent) => void`): keydown handler, for example for Enter or Escape
 - `onclear` (`() => void`): fired after the clear control empties the field
+
+Other attributes, such as `inputmode`, `enterkeyhint`, `autocapitalize`, `autocomplete`, `spellcheck`, `minlength`, `aria-*`, `data-*` and event handlers like `onfocus`, go to the native `<input>`. A `class` attribute is ignored so the component keeps its own styling hooks, and a non-empty `ariaLabel` prop wins over an `aria-label` attribute.
+
+Methods (use `bind:this`):
+
+- `focus(options?: FocusOptions)`: focuses the input, for example to open the soft keyboard
+- `select()`: selects the whole text
+
+```svelte
+<script lang="ts">
+  import { TextInput } from '@lkmc/system7-ui';
+
+  let search: TextInput;
+</script>
+
+<TextInput
+  bind:this={search}
+  ariaLabel="Search"
+  inputmode="search"
+  enterkeyhint="search"
+  autocapitalize="off"
+/>
+<button type="button" onclick={() => search.focus({ preventScroll: true })}>Search</button>
+```
+
+## TitleBar
+
+`TitleBar` draws the striped System 7 window title bar with optional close, zoom and shade boxes.
+
+Props:
+
+- `title` (`string`, required)
+- `closable`, `collapsible`, `shadeable` (`boolean`, default `false`): show the close, zoom (resize-to-fit) and shade boxes
+- `draggable` (`boolean`, default `false`): calls `ondragstart` on mouse or touch down on the bar
+- `focused` (`boolean`, default `true`): draws the inactive bar, without stripes or boxes, when `false`
+- `onclose`, `oncollapse`, `onshade` (`() => void`): fired when the matching box is activated
+- `ondragstart` (`(e: MouseEvent | TouchEvent) => void`)
+- `closeLabel` (`string`, default `'Close'`), `collapseLabel` (`string`, default `'Zoom'`), `shadeLabel` (`string`, default `'Collapse'`): accessible names of the boxes. The shade box toggles, so pass `'Expand'` as `shadeLabel` while the window is shaded.
+
+Slots:
+
+- `actions` (optional): controls at the right end of the bar, before the zoom and shade boxes. Pressing them never starts a drag. Keep the content at most 34px tall. In a runes-mode parent, `{#snippet actions()}` fills the slot too.
+
+Long titles are shortened with an ellipsis to stay clear of the boxes and actions, and the bar keeps its 35px height in a flex column.
+
+```svelte
+<TitleBar title="Settings" closable onclose={close}>
+  <svelte:fragment slot="actions">
+    <Button onclick={save}>Done</Button>
+  </svelte:fragment>
+</TitleBar>
+```
+
+## ConfirmDialog
+
+`ConfirmDialog` shows a modal message with confirm and cancel buttons.
+
+Props:
+
+- `message` (`string`, default `''`)
+- `okText` (`string`, default `'OK'`)
+- `cancelText` (`string`, default `'Cancel'`)
+- `width` (`string`, default `'400px'`): CSS width of the dialog content inside its frame. The dialog still shrinks to fit a narrower screen.
+- `onconfirm` (`() => void`): fired by the OK button or Enter
+- `oncancel` (`() => void`): fired by the cancel button, the backdrop or Escape
 
 ## SystemErrorDialog
 
