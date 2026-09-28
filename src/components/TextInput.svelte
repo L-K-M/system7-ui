@@ -1,4 +1,74 @@
 <script lang="ts">
+  import type { HTMLInputAttributes } from 'svelte/elements';
+
+  /*
+   * The props type published in the package's .d.ts. Without it, `$$restProps` makes svelte2tsx
+   * type the props as `[x: string]: any` and drop every prop's documentation. The component's own
+   * `oninput`, `onchange` and `onkeydown` replace the native ones, and `class` is left out because
+   * the component always sets its own. Keep the docs in step with the `export let` lines below.
+   */
+  interface $$Props extends Omit<
+    HTMLInputAttributes,
+    'class' | 'value' | 'type' | 'oninput' | 'onchange' | 'onkeydown'
+  > {
+    /** Current input value. Supports two-way binding with `bind:value`. */
+    value?: string;
+
+    /** Native input type. */
+    type?: 'text' | 'password' | 'email' | 'search' | 'url' | 'tel';
+
+    /** Disables the input when `true`. */
+    disabled?: boolean;
+
+    /** Makes the input read-only when `true`. */
+    readonly?: boolean;
+
+    /** Optional id passed to the underlying input element. */
+    id?: string;
+
+    /** Optional name used for form submissions. */
+    name?: string;
+
+    /** Placeholder text shown when the input is empty. */
+    placeholder?: string;
+
+    /** Tooltip text shown by the browser on hover. */
+    title?: string;
+
+    /** Accessible label for inputs without a visible `<label>`. */
+    ariaLabel?: string;
+
+    /**
+     * Shows a System 7 close-box style clear control while the field has
+     * content. Hidden when the field is empty, disabled, or read-only.
+     */
+    clearable?: boolean;
+
+    /** Input callback fired on every value change while typing. */
+    oninput?: ((value: string, e: Event) => void) | undefined;
+
+    /** Change callback fired when the value is committed (blur/Enter). */
+    onchange?: ((value: string, e: Event) => void) | undefined;
+
+    /** Keydown callback, e.g. for Enter/Escape handling by the host app. */
+    onkeydown?: ((e: KeyboardEvent) => void) | undefined;
+
+    /** Callback fired after the clear control empties the field. */
+    onclear?: (() => void) | undefined;
+
+    /*
+     * svelte2tsx also lists the exported methods as optional props. Typing them as never here
+     * turns an attempt to pass one as a prop into a type error; `bind:this` still types them as
+     * methods.
+     */
+
+    /** Not a prop: call `focus()` on the component instance from `bind:this`. */
+    focus?: never;
+
+    /** Not a prop: call `select()` on the component instance from `bind:this`. */
+    select?: never;
+  }
+
   /** Current input value. Supports two-way binding with `bind:value`. */
   export let value = '';
 
@@ -46,6 +116,20 @@
 
   let inputElement: HTMLInputElement | null = null;
 
+  /**
+   * Moves keyboard focus to the input, for example to open the soft keyboard. Takes the standard
+   * `FocusOptions`, such as `{ preventScroll: true }`; the type is spelled via `Parameters` because
+   * ESLint's `no-undef` does not know DOM-only type names.
+   */
+  export function focus(options?: Parameters<HTMLInputElement['focus']>[0]) {
+    inputElement?.focus(options);
+  }
+
+  /** Selects the whole text of the input. */
+  export function select() {
+    inputElement?.select();
+  }
+
   function handleInput(e: Event) {
     const target = e.currentTarget as HTMLInputElement;
     value = target.value;
@@ -72,9 +156,20 @@
   $: showClear = clearable && value !== '' && !disabled && !readonly;
 </script>
 
+<!--
+  Other attributes (inputmode, enterkeyhint, autocapitalize, autocomplete, spellcheck, minlength,
+  aria-*, data-*, and event handlers such as onfocus) go to the native <input>. The component owns
+  oninput, onchange and onkeydown, so pass those as its props instead. They are spread first
+  so the attributes written after them win: `class` stays under the component's control, and the
+  `ariaLabel` prop takes precedence over an `aria-label` attribute. The value uses bind:value
+  because an element with a spread sets every attribute through one update that rewrites
+  input.value on each keystroke, which would stop minlength from ever reporting tooShort.
+-->
 <span class="sys7-text-input-wrap">
   <input
+    {...$$restProps}
     bind:this={inputElement}
+    bind:value
     class="sys7-text-input"
     class:has-clear={showClear}
     {type}
@@ -84,8 +179,7 @@
     {disabled}
     {readonly}
     {title}
-    aria-label={ariaLabel || undefined}
-    {value}
+    aria-label={ariaLabel || $$restProps['aria-label'] || undefined}
     oninput={handleInput}
     onchange={handleChange}
     {onkeydown}
@@ -176,5 +270,24 @@
 
   .clear-button svg {
     display: block;
+  }
+
+  /* Grows the clear box's touch target to 44px without changing how it looks. The target ends at
+     the field's right edge, and the text stops short of it, so a tap that places the caret near
+     the end of the text cannot clear the field by accident. */
+  @media (pointer: coarse) {
+    .sys7-text-input.has-clear {
+      padding-right: 44px;
+    }
+
+    .clear-button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -7px;
+      width: 44px;
+      height: 44px;
+      transform: translateY(-50%);
+    }
   }
 </style>

@@ -115,4 +115,27 @@
     cursor: default;
     color: var(--system7-color-disabled-ink, #808080);
   }
+
+  /* Grows the touch target to at least 44px each way without changing the layout or how the
+     control looks. The z-index pair keeps the invisible area under the label's own content, so
+     a link in the label stays tappable. */
+  @media (pointer: coarse) {
+    .sys7-checkbox {
+      position: relative;
+      z-index: 0;
+    }
+
+    .sys7-checkbox::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      min-width: 44px;
+      height: 100%;
+      min-height: 44px;
+      transform: translate(-50%, -50%);
+    }
+  }
 </style>

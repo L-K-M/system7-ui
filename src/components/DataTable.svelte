@@ -41,6 +41,15 @@
   /** Custom colspan for placeholder rows. Defaults to `columns.length` (or `1` when empty). */
   export let emptyColspan: number | null = null;
 
+  /**
+   * Renders the fixed header row when `true`. When `false`, the header container (including any
+   * `header` slot content) is not rendered and the body starts without the double rule that
+   * separates it from the header. Column widths still come from `columns`. Without a header,
+   * assistive technology gets no column names and sortable columns have no controls, so use it
+   * for tables whose columns are clear from context.
+   */
+  export let showHeader = true;
+
   /** Extra class names applied to the fixed header container. */
   export let headerClass = '';
 
@@ -129,51 +138,57 @@
 </script>
 
 <div class={`s7-data-table-root ${className}`}>
-  <div
-    class={`s7-data-table-header-container ${headerClass}`}
-    style:padding-right={`${headerPaddingRight}px`}
-  >
-    <table class={`s7-data-table-table ${tableClass}`}>
-      {#if columns.length > 0}
-        <colgroup>
-          {#each columns as column (column.key)}
-            <col class={getColumnClass(column)} style:width={column.width} />
-          {/each}
-        </colgroup>
-      {/if}
-      <thead>
-        {#if $$slots.header}
-          <slot name="header" {sortKey} {sortDirection} {onSort} />
-        {:else}
-          <tr>
+  {#if showHeader}
+    <div
+      class={`s7-data-table-header-container ${headerClass}`}
+      style:padding-right={`${headerPaddingRight}px`}
+    >
+      <table class={`s7-data-table-table ${tableClass}`}>
+        {#if columns.length > 0}
+          <colgroup>
             {#each columns as column (column.key)}
-              <th
-                class={getColumnClass(column)}
-                style:width={column.width}
-                aria-sort={getAriaSort(column.key)}
-              >
-                {#if column.sortable}
-                  <button
-                    type="button"
-                    class="s7-data-table-sort-button"
-                    class:is-active={sortKey === column.key}
-                    aria-label={column.ariaLabel || `Sort by ${column.label}`}
-                    onclick={() => handleSort(column)}
-                  >
-                    {column.label}
-                  </button>
-                {:else}
-                  <span class="s7-data-table-header-text">{column.label}</span>
-                {/if}
-              </th>
+              <col class={getColumnClass(column)} style:width={column.width} />
             {/each}
-          </tr>
+          </colgroup>
         {/if}
-      </thead>
-    </table>
-  </div>
+        <thead>
+          {#if $$slots.header}
+            <slot name="header" {sortKey} {sortDirection} {onSort} />
+          {:else}
+            <tr>
+              {#each columns as column (column.key)}
+                <th
+                  class={getColumnClass(column)}
+                  style:width={column.width}
+                  aria-sort={getAriaSort(column.key)}
+                >
+                  {#if column.sortable}
+                    <button
+                      type="button"
+                      class="s7-data-table-sort-button"
+                      class:is-active={sortKey === column.key}
+                      aria-label={column.ariaLabel || `Sort by ${column.label}`}
+                      onclick={() => handleSort(column)}
+                    >
+                      {column.label}
+                    </button>
+                  {:else}
+                    <span class="s7-data-table-header-text">{column.label}</span>
+                  {/if}
+                </th>
+              {/each}
+            </tr>
+          {/if}
+        </thead>
+      </table>
+    </div>
+  {/if}
 
-  <div class={`s7-data-table-body-container ${bodyClass}`} bind:this={bodyContainerElement}>
+  <div
+    class={`s7-data-table-body-container ${bodyClass}`}
+    class:is-headless={!showHeader}
+    bind:this={bodyContainerElement}
+  >
     <table class={`s7-data-table-table ${tableClass}`}>
       {#if columns.length > 0}
         <colgroup>
@@ -226,6 +241,12 @@
     background: var(--system7-color-paper, #fff);
   }
 
+  /* The top border and gap only complete the double rule under the header. */
+  .s7-data-table-body-container.is-headless {
+    border-top: none;
+    margin-top: 0;
+  }
+
   .s7-data-table-root :global(table.s7-data-table-table) {
     width: 100%;
     border-collapse: collapse;
@@ -236,7 +257,7 @@
   .s7-data-table-root :global(table.s7-data-table-table td) {
     text-align: left;
     border-bottom: 0.5px solid var(--system7-color-ink, #000);
-    padding: 5px 8px;
+    padding: var(--system7-table-cell-padding, 5px 8px);
     vertical-align: middle;
   }
 

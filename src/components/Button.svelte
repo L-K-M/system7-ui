@@ -1,5 +1,36 @@
 <script lang="ts">
+  import type { HTMLButtonAttributes } from 'svelte/elements';
+
   type ButtonVariant = 'default' | 'primary' | 'icon';
+
+  /*
+   * The props type published in the package's .d.ts. Without it, `$$restProps` makes svelte2tsx
+   * type the props as `[x: string]: any` and drop every prop's documentation. `class` is left out
+   * because the component always sets its own. Keep the docs in step with the `export let` lines
+   * below.
+   */
+  interface $$Props extends Omit<HTMLButtonAttributes, 'class'> {
+    /**
+     * Visual style variant.
+     *
+     * - `default`: standard button
+     * - `primary`: emphasized action with outer border
+     * - `icon`: icon-only button
+     */
+    variant?: ButtonVariant;
+
+    /** Whether the button is disabled. */
+    disabled?: boolean;
+
+    /** Native button type attribute. */
+    type?: 'button' | 'submit' | 'reset';
+
+    /** Tooltip text shown by the browser on hover. */
+    title?: string;
+
+    /** Click handler called when the button is activated. */
+    onclick?: ((e: MouseEvent) => void) | undefined;
+  }
 
   /**
    * Visual style variant.
@@ -23,15 +54,28 @@
   export let onclick: ((e: MouseEvent) => void) | undefined = undefined;
 </script>
 
+<!--
+  Other attributes (aria-*, data-*, name, value, form, event handlers such as onfocus) go to the
+  native <button>. They are spread first so the attributes written after them win: `class` stays
+  under the component's control and cannot drop its styling hooks.
+-->
 {#if variant === 'primary'}
   <div class="primary-border" class:disabled>
-    <button class="sys7-btn" {disabled} {title} {type} {onclick}>
+    <button {...$$restProps} class="sys7-btn" {disabled} {title} {type} {onclick}>
       <!-- @slot default - Button label text or icon content. -->
       <slot />
     </button>
   </div>
 {:else}
-  <button class="sys7-btn" class:icon-btn={variant === 'icon'} {disabled} {title} {type} {onclick}>
+  <button
+    {...$$restProps}
+    class="sys7-btn"
+    class:icon-btn={variant === 'icon'}
+    {disabled}
+    {title}
+    {type}
+    {onclick}
+  >
     <!-- @slot default - Button label text or icon content. -->
     <slot />
   </button>
@@ -80,8 +124,11 @@
     cursor: pointer;
   }
 
-  .icon-btn:hover {
-    opacity: 0.7;
+  /* Hover only where a pointer can hover, so a tap does not leave the button dimmed. */
+  @media (hover: hover) {
+    .icon-btn:hover {
+      opacity: 0.7;
+    }
   }
 
   .icon-btn:active {
@@ -92,5 +139,21 @@
     width: 16px;
     height: 16px;
     display: block;
+  }
+
+  /* Grows the touch target of icon buttons to at least 44px each way without changing the layout
+     or how the button looks. */
+  @media (pointer: coarse) {
+    .icon-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      min-width: 44px;
+      height: 100%;
+      min-height: 44px;
+      transform: translate(-50%, -50%);
+    }
   }
 </style>
