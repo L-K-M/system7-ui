@@ -28,6 +28,33 @@
   --system7-overlay-soft: rgba(0, 0, 0, 0.1);
   --system7-overlay-strong: rgba(0, 0, 0, 0.2);
   --system7-close-icon-filter: invert(1);
+
+  /* Geneva91.otf is drawn on a 16px pixel grid: 16px renders at 1x, 24px
+     at 1.5x and 32px at 2x. Other sizes scale its pixels unevenly, and
+     Geneva below 16px is hard to read on phones. Custom properties inherit,
+     so setting --system7-font-size on any element inside .s7-root resizes
+     that subtree only. Use px values: an em or % value is resolved again on
+     every nested element and compounds. Sysfont text (buttons, checkbox and
+     radio labels, dropdowns, .dialog-text, headings) uses
+     --system7-control-font-size instead. */
+  --system7-font-size: 24px;
+  --system7-control-font-size: 18px;
+
+  /* Insets that keep content clear of the notch, status bar and gesture bar.
+     env() reports non-zero values only when the page's viewport meta tag
+     includes viewport-fit=cover. Apps may override these tokens, for
+     example with insets reported by native code where env() is unreliable. */
+  --system7-safe-area-top: env(safe-area-inset-top, 0px);
+  --system7-safe-area-right: env(safe-area-inset-right, 0px);
+  --system7-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --system7-safe-area-left: env(safe-area-inset-left, 0px);
+
+  /* Width of vertical and height of horizontal ::-webkit-scrollbar bars. It
+     can be overridden on any ancestor of the scrolling element. */
+  --system7-scrollbar-size: 16px;
+
+  /* DataTable th/td padding, e.g. 12px 8px for taller touch rows. */
+  --system7-table-cell-padding: 5px 8px;
 }
 
 @font-face {
@@ -47,7 +74,13 @@
 .s7-root,
 .s7-root * {
   font-family: 'Geneva', 'Verdana', 'Helvetica', sans-serif !important;
-  font-size: 24px;
+  font-size: var(--system7-font-size, 24px);
+}
+
+/* Removes the translucent flash that Android WebViews draw over tapped
+   elements; pressed states are drawn by the components themselves. */
+.s7-root {
+  -webkit-tap-highlight-color: transparent;
 }
 
 .sys7-btn,
@@ -65,7 +98,7 @@
 .s7-root h6 {
   font-family: 'Sysfont', 'Chicago', 'Impact', sans-serif !important;
   letter-spacing: 1px;
-  font-size: 18px;
+  font-size: var(--system7-control-font-size, 18px);
   font-feature-settings:
     'liga' off,
     'clig' off,
@@ -98,8 +131,8 @@
 }
 
 .s7-root ::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
+  width: var(--system7-scrollbar-size, 16px);
+  height: var(--system7-scrollbar-size, 16px);
 }
 
 .s7-root ::-webkit-scrollbar-track {

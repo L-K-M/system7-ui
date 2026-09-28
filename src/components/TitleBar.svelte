@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import titleBg from '../assets/titlebar_bg.png';
   import closeButton from '../assets/close_button.png';
   import resizeButton from '../assets/resize_button.png';
@@ -34,6 +35,65 @@
   /** Callback fired when dragging starts from the title bar. */
   export let ondragstart: ((e: MouseEvent | TouchEvent) => void) | undefined = undefined;
 
+  /** Accessible name of the close control. */
+  export let closeLabel = 'Close';
+
+  /**
+   * Accessible name of the shade control. The control toggles between collapsed and expanded, so
+   * pass a state-specific label (for example `'Expand'` while collapsed) when you track that state.
+   */
+  export let shadeLabel = 'Collapse';
+
+  /** Accessible name of the resize-to-fit (zoom) control. */
+  export let collapseLabel = 'Zoom';
+
+  // Horizontal space one window box takes from the title bar's padding edge: a 22px box inside a
+  // 2px border plus its 12px outer margin.
+  const BOX_SLOT_WIDTH = 38;
+
+  // Matches the `.title-bar-actions` right margin.
+  const ACTIONS_MARGIN = 12;
+
+  // The title bar's 4px side padding plus a strip of rails kept visible between a truncated title
+  // and the nearest control.
+  const TITLE_CLEARANCE = 4 + 6;
+
+  let actionsElement: HTMLDivElement | null = null;
+  let actionsWidth = 0;
+
+  // The title stays centred on the whole bar, so it may only grow as wide as the more crowded side
+  // allows on both sides.
+  $: titleInset =
+    TITLE_CLEARANCE +
+    Math.max(
+      closable ? BOX_SLOT_WIDTH : 0,
+      (actionsWidth > 0 ? actionsWidth + ACTIONS_MARGIN : 0) +
+        (collapsible ? BOX_SLOT_WIDTH : 0) +
+        (shadeable ? BOX_SLOT_WIDTH : 0)
+    );
+
+  onMount(() => {
+    if (!actionsElement) {
+      return;
+    }
+
+    measureActions();
+
+    // Actions can change width after mount, for example when a web font loads. ResizeObserver is
+    // missing in some test environments, where the initial measurement has to do.
+    if (typeof ResizeObserver === 'undefined') {
+      return;
+    }
+
+    const observer = new ResizeObserver(measureActions);
+    observer.observe(actionsElement);
+    return () => observer.disconnect();
+  });
+
+  function measureActions() {
+    actionsWidth = actionsElement ? Math.ceil(actionsElement.getBoundingClientRect().width) : 0;
+  }
+
   function shouldIgnoreDragStart(target: EventTarget | null) {
     const element = target as HTMLElement | null;
     if (!element) {
@@ -44,7 +104,8 @@
       element.closest('.close-box') ||
       element.closest('.collapse-box') ||
       element.closest('.shade-box') ||
-      element.closest('.button-container')
+      element.closest('.button-container') ||
+      element.closest('.title-bar-actions')
     );
   }
 
@@ -100,6 +161,7 @@
         class="close-box"
         role="button"
         tabindex="0"
+        aria-label={closeLabel}
         onclick={onclose}
         onkeydown={(e) => handleKeydown(onclose, e)}
         style="background-image: url({closeButton});"
@@ -107,9 +169,18 @@
     </div>
   {/if}
 
-  <div class="title-text"><span>{title}</span></div>
+  <div class="title-text" style:max-width={`calc(100% - ${2 * titleInset}px)`}>
+    <span>{title}</span>
+  </div>
 
-  <div class="right-side-buttons">
+  <div class="right-side-buttons" class:has-actions={$$slots.actions}>
+    {#if $$slots.actions}
+      <div class="title-bar-actions" bind:this={actionsElement}>
+        <!-- @slot actions - Controls shown at the right end of the bar, before the zoom and shade boxes, vertically centred and drawn above the title. Pressing them never starts a window drag. The title is shortened to stay clear of them, and the bar keeps its 35px height, so keep content at most 34px tall. -->
+        <slot name="actions" />
+      </div>
+    {/if}
+
     {#if collapsible}
       <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div class="button-container" onmousedown={(e) => e.stopPropagation()}>
@@ -117,6 +188,7 @@
           class="collapse-box"
           role="button"
           tabindex="0"
+          aria-label={collapseLabel}
           onclick={oncollapse}
           onkeydown={(e) => handleKeydown(oncollapse, e)}
           style="background-image: url({resizeButton});"
@@ -131,6 +203,7 @@
           class="shade-box"
           role="button"
           tabindex="0"
+          aria-label={shadeLabel}
           onclick={onshade}
           onkeydown={(e) => handleKeydown(onshade, e)}
           style="background-image: url({windowshadeButton});"
@@ -151,6 +224,7 @@
     user-select: none;
     cursor: default;
     height: 35px;
+    flex-shrink: 0;
     box-sizing: border-box;
     background-size:
       100% 100%,
@@ -160,6 +234,12 @@
     border-right: 2px solid var(--system7-color-titlebar-edge-dark, #a3a3d7);
     border-left: 2px solid var(--system7-color-titlebar-edge-light, #ccccff);
     image-rendering: pixelated;
+  }
+
+  /* Lets touch drags move the window instead of scrolling the page. Svelte registers touchstart
+     listeners as passive, so the drag handler cannot call preventDefault(). */
+  .title-bar.draggable {
+    touch-action: none;
   }
 
   .title-text {
@@ -174,6 +254,8 @@
     transform: translateX(-50%);
     pointer-events: none;
     white-space: nowrap;
+    box-sizing: border-box;
+    width: max-content;
   }
 
   .title-text span {
@@ -182,6 +264,9 @@
     font-size: 24px;
     font-weight: normal;
     padding-top: 2px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   @-moz-document url-prefix() {
@@ -192,6 +277,19 @@
 
   .right-side-buttons {
     display: flex;
+  }
+
+  /* Keeps actions at the right end even when no close box precedes them. */
+  .right-side-buttons.has-actions {
+    margin-left: auto;
+  }
+
+  .title-bar-actions {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    margin-right: 12px;
+    z-index: 10;
   }
 
   .button-container {
@@ -246,6 +344,20 @@
   .collapse-box:active,
   .shade-box:active {
     filter: invert(1);
+  }
+
+  /* Grows the touch target to 44px without changing how the boxes look. */
+  @media (pointer: coarse) {
+    .close-box::after,
+    .collapse-box::after,
+    .shade-box::after {
+      content: '';
+      position: absolute;
+      top: -11px;
+      right: -11px;
+      bottom: -11px;
+      left: -11px;
+    }
   }
 
   .title-bar.unfocused {
