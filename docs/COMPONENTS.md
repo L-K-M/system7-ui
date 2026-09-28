@@ -241,8 +241,9 @@ covers `viewport-fit=cover`, safe areas and touch targets.
 - Notes:
   - Focus is moved into the dialog on mount and restored on close.
   - Slot rendering is wrapped with `ErrorBoundary` for graceful fallback UI.
-  - The dialog stays inside the safe area. When it does not fit, it shrinks and its content
-    scrolls.
+  - On coarse pointers (touch screens), the dialog stays inside the safe area. When it does not
+    fit, it shrinks and its content scrolls. On desktop, it still grows with its content, so a
+    popover such as `BalloonHelp` inside it is not clipped.
 
 ### ConfirmDialog
 
@@ -250,7 +251,7 @@ covers `viewport-fit=cover`, safe areas and touch targets.
   - `message`: `string`
   - `okText`: `string` (defaults to `'OK'`)
   - `cancelText`: `string` (defaults to `'Cancel'`)
-  - `width`: `string` (defaults to `'400px'`; the dialog still shrinks on narrower screens)
+  - `width`: `string` (defaults to `'400px'`; the dialog still shrinks on narrower touch screens)
   - `onconfirm`: `() => void` (OK button or Enter)
   - `oncancel`: `() => void` (cancel button, backdrop or Escape)
 
@@ -266,7 +267,9 @@ covers `viewport-fit=cover`, safe areas and touch targets.
 - Notes:
   - Drag now supports mouse and touch input.
   - The dialog stays inside the safe area while dragged, after it is shaded or expanded, and when
-    the window is resized. When it does not fit, it shrinks and its content scrolls.
+    the window is resized. On coarse pointers (touch screens), a dialog that does not fit shrinks
+    and its content scrolls. On desktop, it still grows with its content, so a popover such as
+    `BalloonHelp` inside it is not clipped.
 
 ### TitleBar
 

@@ -15,7 +15,8 @@
 - `ConfirmDialog` `width` prop.
 - `TextInput` `focus()` and `select()` methods.
 - `Button` and `TextInput` forward other attributes, such as `aria-*`, `data-*`, `inputmode` and
-  `enterkeyhint`, to the native element.
+  `enterkeyhint`, to the native element. Their prop types include the native element's attributes
+  except `class`, which the components ignore.
 - 44px hit areas on coarse pointers for `Checkbox`, `Radio`, `icon` buttons, the `TextInput` clear
   box, the `Notification` dismiss box and the `TitleBar` boxes.
 - Storybook stories for `ConfirmDialog`, `DataTable` and `TitleBar`, tall dialog content, long
@@ -24,8 +25,14 @@
 ### Changed
 
 - `.s7-root` sets `-webkit-tap-highlight-color: transparent`.
-- `ModalDialog` and `MovableDialog` stay inside the safe area and scroll content that does not
-  fit. A dragged `MovableDialog` is kept on screen when the window is resized.
+- On coarse pointers (touch screens), `ModalDialog` and `MovableDialog` stay inside the safe area
+  and scroll content that does not fit. App rules that override `max-width` or `max-height` on
+  the `MovableDialog` `.s7-dialog` element still win, also after a drag. On desktop, dialogs still
+  grow with their content, so a popover such as `BalloonHelp` inside them is not clipped. A dragged
+  `MovableDialog` is kept on screen when the window is resized.
+- The `ModalDialog` and `MovableDialog` backdrops set their padding from the
+  `--system7-safe-area-*` tokens, which are `0px` on desktop. This overrides padding that an app
+  sets with a selector such as `body .s7-backdrop`, so set the tokens instead.
 - `Notification` toasts render inside one `.notification-stack` element, which is always present.
   The stack keeps clear of the safe area.
 - `BalloonHelp` no longer opens on touch taps. Mouse and pen hover and keyboard focus still open
@@ -35,8 +42,8 @@
   scrolling the page.
 - A clearable `TextInput` on a coarse pointer widens its right padding to 44px while the clear box
   shows.
-- The `Button` and `TextInput` prop types accept any attribute, so a misspelled prop is no longer
-  a type error.
+- `TitleBar` clips its title text with an ellipsis. The clip can switch Chromium from LCD
+  (subpixel) to grayscale antialiasing for the title glyphs, so titles can look slightly lighter.
 
 ### Fixed
 

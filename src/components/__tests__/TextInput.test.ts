@@ -180,6 +180,7 @@ describe('TextInput', () => {
 
   it('keeps its own class and drops a passed class', () => {
     render(TextInput, {
+      // @ts-expect-error `class` is not in the props type; this checks untyped callers too.
       props: { ariaLabel: 'Name', class: 'app-field' }
     });
 

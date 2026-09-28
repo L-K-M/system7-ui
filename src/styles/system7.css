@@ -55,6 +55,12 @@
 
   /* DataTable th/td padding, e.g. 12px 8px for taller touch rows. */
   --system7-table-cell-padding: 5px 8px;
+
+  /* Distance of the Notification stack from the bottom and right edges,
+     added to the safe-area insets. The right offset is also the minimum
+     left margin of a toast. */
+  --system7-notification-offset-bottom: 20px;
+  --system7-notification-offset-right: 20px;
 }
 
 @font-face {

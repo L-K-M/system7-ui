@@ -1,7 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/svelte';
+import { compile } from 'svelte/compiler';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import MovableDialog from '../MovableDialog.svelte';
+import movableDialogSource from '../MovableDialog.svelte?raw';
 
 function createTouchLikeEvent(type: string, clientX: number, clientY: number) {
   const event = new Event(type, { bubbles: true, cancelable: true }) as TouchEvent;
@@ -95,6 +97,21 @@ describe('MovableDialog', () => {
 
     await fireEvent.click(shadeButton);
     expect(container.querySelector('.modal-content')).not.toBeNull();
+  });
+
+  it('names the shade box after what the next press does', async () => {
+    const { container } = render(MovableDialog, {
+      props: { title: 'Host details' }
+    });
+
+    const shadeButton = container.querySelector('.shade-box') as HTMLElement;
+    expect(shadeButton.getAttribute('aria-label')).toBe('Collapse');
+
+    await fireEvent.click(shadeButton);
+    expect(shadeButton.getAttribute('aria-label')).toBe('Expand');
+
+    await fireEvent.click(shadeButton);
+    expect(shadeButton.getAttribute('aria-label')).toBe('Collapse');
   });
 
   it('updates dialog position when dragged from title bar', async () => {
@@ -283,5 +300,30 @@ describe('MovableDialog placement', () => {
     await Promise.resolve();
 
     expect(renderedPosition(dialog)).toEqual({ left: '30px', top: '400px' });
+  });
+});
+
+describe('MovableDialog stylesheet', () => {
+  // jsdom cannot evaluate media queries, so check the compiled stylesheet with comments removed.
+  const { css } = compile(movableDialogSource, {
+    css: 'external',
+    filename: 'MovableDialog.svelte'
+  });
+  const code = (css?.code ?? '').replace(/\/\*[\s\S]*?\*\//g, '');
+  const [desktop, coarse, ...rest] = code.split('@media (pointer: coarse)');
+
+  it('limits and scrolls the dialog only on coarse pointers', () => {
+    // A scrolling body would clip popovers such as BalloonHelp in desktop dialogs.
+    expect(rest).toEqual([]);
+    expect(desktop).not.toMatch(/overflow|max-width|max-height/);
+    expect(coarse).toMatch(/\.modal-content[^{]*\{\s*min-height: 0;\s*overflow: auto;/);
+    expect(coarse).toMatch(/\.s7-dialog[^{]*\{\s*max-width: calc\(100% - 2px\);/);
+  });
+
+  it('keeps the dragged-dialog limits below the specificity of consumer overrides', () => {
+    // A bare `.positioned` compiles to two classes, like `.s7-dialog`, so a consumer rule such as
+    // `body .s7-backdrop > .s7-dialog` still wins once the dialog is dragged.
+    expect(coarse).toMatch(/(^|\s)\.positioned\.svelte-[\w-]+\s*\{\s*max-width:/);
+    expect(code).not.toMatch(/\.s7-dialog\.positioned/);
   });
 });

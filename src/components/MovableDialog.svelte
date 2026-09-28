@@ -221,6 +221,7 @@
       closable
       shadeable
       draggable
+      shadeLabel={isCollapsed ? 'Expand' : 'Collapse'}
       onclose={close}
       onshade={toggleCollapse}
       ondragstart={handleDragStart}
@@ -262,9 +263,6 @@
     padding: 16px;
     display: flex;
     flex-direction: column;
-    /* Scrolls when the dialog is limited to the viewport height. */
-    min-height: 0;
-    overflow: auto;
   }
 
   .s7-dialog {
@@ -273,24 +271,7 @@
     box-shadow: 4px 4px 0 var(--system7-shadow-soft, rgba(0, 0, 0, 0.2));
     display: flex;
     flex-direction: column;
-    /* The width prop sizes the content box, so the limits subtract the 1px border on each side.
-       Inside the backdrop, 100% is the safe area. */
-    max-width: calc(100% - 2px);
-    max-height: calc(100% - 2px);
     outline: none;
-  }
-
-  /* Once dragged, the dialog is fixed to the viewport rather than laid out by the backdrop, so
-     100% is the whole viewport and the limits subtract the safe-area insets themselves. */
-  .s7-dialog.positioned {
-    max-width: calc(
-      100% - 2px - var(--system7-safe-area-left, env(safe-area-inset-left, 0px)) -
-        var(--system7-safe-area-right, env(safe-area-inset-right, 0px))
-    );
-    max-height: calc(
-      100% - 2px - var(--system7-safe-area-top, env(safe-area-inset-top, 0px)) -
-        var(--system7-safe-area-bottom, env(safe-area-inset-bottom, 0px))
-    );
   }
 
   .s7-dialog:focus {
@@ -299,5 +280,37 @@
 
   .s7-dialog.dragging {
     user-select: none;
+  }
+
+  /* On touch screens the dialog is limited to the safe area and its content scrolls. Desktop
+     dialogs grow with their content instead, because a scrolling body would clip popovers such
+     as BalloonHelp that reach past it. */
+  @media (pointer: coarse) {
+    .modal-content {
+      min-height: 0;
+      overflow: auto;
+    }
+
+    /* The width prop sizes the content box, so the limits subtract the 1px border on each side.
+       Inside the backdrop, 100% is the safe area. */
+    .s7-dialog {
+      max-width: calc(100% - 2px);
+      max-height: calc(100% - 2px);
+    }
+
+    /* Once dragged, the dialog is fixed to the viewport rather than laid out by the backdrop, so
+       100% is the whole viewport and the limits subtract the safe-area insets themselves. The
+       bare class keeps the specificity of the rule above, so consumer limits that override
+       `.s7-dialog`, such as `body .s7-backdrop > .s7-dialog`, still win after a drag. */
+    .positioned {
+      max-width: calc(
+        100% - 2px - var(--system7-safe-area-left, env(safe-area-inset-left, 0px)) -
+          var(--system7-safe-area-right, env(safe-area-inset-right, 0px))
+      );
+      max-height: calc(
+        100% - 2px - var(--system7-safe-area-top, env(safe-area-inset-top, 0px)) -
+          var(--system7-safe-area-bottom, env(safe-area-inset-bottom, 0px))
+      );
+    }
   }
 </style>

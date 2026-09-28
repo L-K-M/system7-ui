@@ -12,7 +12,10 @@
   /** Label for the secondary cancel button. */
   export let cancelText = 'Cancel';
 
-  /** CSS width value passed to the underlying `ModalDialog`; narrower viewports still shrink it. */
+  /**
+   * CSS width value passed to the underlying `ModalDialog`. On touch screens, a narrower viewport
+   * still shrinks the dialog.
+   */
   export let width = '400px';
 
   /** Callback fired when the confirm button is clicked. */

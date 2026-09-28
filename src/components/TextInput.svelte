@@ -1,4 +1,74 @@
 <script lang="ts">
+  import type { HTMLInputAttributes } from 'svelte/elements';
+
+  /*
+   * The props type published in the package's .d.ts. Without it, `$$restProps` makes svelte2tsx
+   * type the props as `[x: string]: any` and drop every prop's documentation. The component's own
+   * `oninput`, `onchange` and `onkeydown` replace the native ones, and `class` is left out because
+   * the component always sets its own. Keep the docs in step with the `export let` lines below.
+   */
+  interface $$Props extends Omit<
+    HTMLInputAttributes,
+    'class' | 'value' | 'type' | 'oninput' | 'onchange' | 'onkeydown'
+  > {
+    /** Current input value. Supports two-way binding with `bind:value`. */
+    value?: string;
+
+    /** Native input type. */
+    type?: 'text' | 'password' | 'email' | 'search' | 'url' | 'tel';
+
+    /** Disables the input when `true`. */
+    disabled?: boolean;
+
+    /** Makes the input read-only when `true`. */
+    readonly?: boolean;
+
+    /** Optional id passed to the underlying input element. */
+    id?: string;
+
+    /** Optional name used for form submissions. */
+    name?: string;
+
+    /** Placeholder text shown when the input is empty. */
+    placeholder?: string;
+
+    /** Tooltip text shown by the browser on hover. */
+    title?: string;
+
+    /** Accessible label for inputs without a visible `<label>`. */
+    ariaLabel?: string;
+
+    /**
+     * Shows a System 7 close-box style clear control while the field has
+     * content. Hidden when the field is empty, disabled, or read-only.
+     */
+    clearable?: boolean;
+
+    /** Input callback fired on every value change while typing. */
+    oninput?: ((value: string, e: Event) => void) | undefined;
+
+    /** Change callback fired when the value is committed (blur/Enter). */
+    onchange?: ((value: string, e: Event) => void) | undefined;
+
+    /** Keydown callback, e.g. for Enter/Escape handling by the host app. */
+    onkeydown?: ((e: KeyboardEvent) => void) | undefined;
+
+    /** Callback fired after the clear control empties the field. */
+    onclear?: (() => void) | undefined;
+
+    /*
+     * svelte2tsx also lists the exported methods as optional props. Typing them as never here
+     * turns an attempt to pass one as a prop into a type error; `bind:this` still types them as
+     * methods.
+     */
+
+    /** Not a prop: call `focus()` on the component instance from `bind:this`. */
+    focus?: never;
+
+    /** Not a prop: call `select()` on the component instance from `bind:this`. */
+    select?: never;
+  }
+
   /** Current input value. Supports two-way binding with `bind:value`. */
   export let value = '';
 

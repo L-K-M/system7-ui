@@ -23,7 +23,10 @@ export const Unfocused: Story = {
   }
 };
 
-/** Taller than most viewports: the dialog stays inside the viewport and its body scrolls. */
+/**
+ * Taller than most viewports: on a touch screen the dialog stays inside the viewport and its body
+ * scrolls. On desktop the dialog grows with its content.
+ */
 export const TallContent: Story = {
   args: {
     title: 'Settings',

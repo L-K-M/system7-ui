@@ -59,6 +59,7 @@ describe('Button', () => {
 
   it('keeps its own class and drops a passed class', () => {
     render(Button, {
+      // @ts-expect-error `class` is not in the props type; this checks untyped callers too.
       props: { class: 'app-button', type: 'submit' }
     });
 

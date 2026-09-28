@@ -1,5 +1,36 @@
 <script lang="ts">
+  import type { HTMLButtonAttributes } from 'svelte/elements';
+
   type ButtonVariant = 'default' | 'primary' | 'icon';
+
+  /*
+   * The props type published in the package's .d.ts. Without it, `$$restProps` makes svelte2tsx
+   * type the props as `[x: string]: any` and drop every prop's documentation. `class` is left out
+   * because the component always sets its own. Keep the docs in step with the `export let` lines
+   * below.
+   */
+  interface $$Props extends Omit<HTMLButtonAttributes, 'class'> {
+    /**
+     * Visual style variant.
+     *
+     * - `default`: standard button
+     * - `primary`: emphasized action with outer border
+     * - `icon`: icon-only button
+     */
+    variant?: ButtonVariant;
+
+    /** Whether the button is disabled. */
+    disabled?: boolean;
+
+    /** Native button type attribute. */
+    type?: 'button' | 'submit' | 'reset';
+
+    /** Tooltip text shown by the browser on hover. */
+    title?: string;
+
+    /** Click handler called when the button is activated. */
+    onclick?: ((e: MouseEvent) => void) | undefined;
+  }
 
   /**
    * Visual style variant.

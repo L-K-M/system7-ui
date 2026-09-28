@@ -122,7 +122,7 @@ Touch support needs no extra props. To lay out a full-screen app on a phone:
    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
    ```
 
-2. Pad your own fixed or full-height layout with the `--system7-safe-area-*` tokens. `ModalDialog`, `MovableDialog` and `Notification` already stay inside them. If your WebView reports the insets incorrectly, set the tokens yourself, for example from values reported by native code.
+2. Pad your own fixed or full-height layout with the `--system7-safe-area-*` tokens. `Notification` already stays inside them, and so do `ModalDialog` and `MovableDialog` on coarse pointers. If your WebView reports the insets incorrectly, set the tokens yourself, for example from values reported by native code.
 
    ```css
    .app-shell {
@@ -135,12 +135,12 @@ Touch support needs no extra props. To lay out a full-screen app on a phone:
 
 On touch devices, the components also:
 
-- Give small controls an invisible hit area of at least 44px on coarse pointers (`@media (pointer: coarse)`) without changing how they look or lay out: `Checkbox`, `Radio`, `icon` buttons, the `TextInput` clear box, the `Notification` dismiss box and the `TitleBar` boxes. Hit areas of controls closer than 44px apart overlap and the later control in the DOM wins, so space touch rows at least 44px apart.
+- Give small controls an invisible hit area of at least 44px on coarse pointers (`@media (pointer: coarse)`) without changing how they look or lay out: `Checkbox`, `Radio`, `icon` buttons, the `TextInput` clear box, the `Notification` dismiss box and the `TitleBar` boxes. An enlarged hit area sits above neighboring controls, whichever side of it they are on in the DOM, and takes their taps where the areas overlap. Leave at least 44px between the centers of stacked touch controls.
 - Widen a clearable `TextInput`'s right padding to 44px while its clear box shows on a coarse pointer, so a tap near the end of the text places the caret instead of clearing the field.
 - Dim `icon` buttons on hover only under `@media (hover: hover)`, so a tap does not leave one dimmed.
 - Keep `BalloonHelp` closed on touch taps. Mouse and pen hover and keyboard focus still open it.
 - Set `touch-action: none` on a draggable `TitleBar`, so a drag moves the window instead of scrolling the page.
-- Limit `ModalDialog` and `MovableDialog` to the safe area and scroll their content when it does not fit. A dragged `MovableDialog` stays inside the safe area, also after the window is resized.
+- Limit `ModalDialog` and `MovableDialog` to the safe area on coarse pointers and scroll their content when it does not fit. A dragged `MovableDialog` stays inside the safe area, also after the window is resized. On desktop, dialogs still grow with their content, so a popover such as `BalloonHelp` inside them is not clipped.
 
 ## Exports
 
