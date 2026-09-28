@@ -126,4 +126,16 @@ describe('ConfirmDialog', () => {
 
     expect(handleCancel).toHaveBeenCalledTimes(1);
   });
+
+  it('keeps the 400px default width', () => {
+    render(ConfirmDialog, { props: { message: 'Proceed?' } });
+
+    expect(screen.getByRole('dialog').style.width).toBe('400px');
+  });
+
+  it('passes a custom width to the dialog frame', () => {
+    render(ConfirmDialog, { props: { message: 'Proceed?', width: '300px' } });
+
+    expect(screen.getByRole('dialog').style.width).toBe('300px');
+  });
 });

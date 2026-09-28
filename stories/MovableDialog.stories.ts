@@ -22,3 +22,11 @@ export const Unfocused: Story = {
     focused: false
   }
 };
+
+/** Taller than most viewports: the dialog stays inside the viewport and its body scrolls. */
+export const TallContent: Story = {
+  args: {
+    title: 'Settings',
+    extraLines: 40
+  }
+};

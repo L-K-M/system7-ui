@@ -3,6 +3,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import BalloonHelp from '../BalloonHelp.svelte';
 
+// jsdom has no PointerEvent, so the pointer type is attached to a plain event.
+function dispatchPointerEvent(target: HTMLElement, type: string, pointerType: string) {
+  const event = new Event(type, { bubbles: type !== 'pointerenter' });
+  Object.defineProperty(event, 'pointerType', { value: pointerType });
+  target.dispatchEvent(event);
+}
+
 describe('BalloonHelp', () => {
   beforeEach(() => {
     vi.useFakeTimers();
@@ -81,5 +88,64 @@ describe('BalloonHelp', () => {
     unmount();
 
     expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('does not open from the mouse and focus events that follow a touch tap', async () => {
+    const { container } = render(BalloonHelp, {
+      props: { message: 'Helpful text', delay: 100 }
+    });
+
+    const trigger = container.querySelector('.balloon-container') as HTMLElement;
+    dispatchPointerEvent(trigger, 'pointerenter', 'touch');
+    dispatchPointerEvent(trigger, 'pointerdown', 'touch');
+    await fireEvent.mouseEnter(trigger);
+    await fireEvent.focusIn(trigger);
+    await vi.advanceTimersByTimeAsync(500);
+
+    expect(container.querySelector('.balloon')).toBeNull();
+  });
+
+  it('opens on mouse hover after an earlier touch tap', async () => {
+    const { container } = render(BalloonHelp, {
+      props: { message: 'Helpful text', delay: 100 }
+    });
+
+    const trigger = container.querySelector('.balloon-container') as HTMLElement;
+    dispatchPointerEvent(trigger, 'pointerdown', 'touch');
+    await fireEvent.mouseLeave(trigger);
+    dispatchPointerEvent(trigger, 'pointerenter', 'mouse');
+    await fireEvent.mouseEnter(trigger);
+    await vi.advanceTimersByTimeAsync(100);
+
+    expect(container.querySelector('.balloon')).not.toBeNull();
+  });
+
+  it('opens on keyboard focus after an earlier touch tap', async () => {
+    const { container } = render(BalloonHelp, {
+      props: { message: 'Keyboard help', delay: 100 }
+    });
+
+    const trigger = container.querySelector('.balloon-container') as HTMLElement;
+    dispatchPointerEvent(trigger, 'pointerdown', 'touch');
+    await fireEvent.keyDown(window, { key: 'Tab' });
+    await fireEvent.focusIn(trigger);
+    await vi.advanceTimersByTimeAsync(100);
+
+    expect(container.querySelector('.balloon')).not.toBeNull();
+  });
+
+  it('opens on keyboard focus after a tap even when a dialog stops keydown bubbling', async () => {
+    const { container } = render(BalloonHelp, {
+      props: { message: 'Keyboard help', delay: 100 }
+    });
+
+    const trigger = container.querySelector('.balloon-container') as HTMLElement;
+    trigger.addEventListener('keydown', (event) => event.stopPropagation());
+    dispatchPointerEvent(trigger, 'pointerdown', 'touch');
+    await fireEvent.keyDown(trigger, { key: 'Tab' });
+    await fireEvent.focusIn(trigger);
+    await vi.advanceTimersByTimeAsync(100);
+
+    expect(container.querySelector('.balloon')).not.toBeNull();
   });
 });

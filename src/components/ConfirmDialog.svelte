@@ -12,6 +12,9 @@
   /** Label for the secondary cancel button. */
   export let cancelText = 'Cancel';
 
+  /** CSS width value passed to the underlying `ModalDialog`; narrower viewports still shrink it. */
+  export let width = '400px';
+
   /** Callback fired when the confirm button is clicked. */
   export let onconfirm: (() => void) | undefined = undefined;
 
@@ -42,7 +45,7 @@
 
 <svelte:window on:keydown|capture={handleKeydown} />
 
-<ModalDialog width="400px" onclose={handleCancel}>
+<ModalDialog {width} onclose={handleCancel}>
   <div class="confirm-content">
     <img src={bombIcon} alt="" class="bomb-icon" />
     <p class="message dialog-text">{message}</p>

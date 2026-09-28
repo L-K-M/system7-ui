@@ -16,6 +16,7 @@
   /** Callback fired when the backdrop or close button closes the dialog. */
   export let onclose: (() => void) | undefined = undefined;
 
+  let backdropElement: HTMLDivElement;
   let dialogElement: HTMLDivElement;
   let isDragging = false;
   let isCollapsed = false;
@@ -39,14 +40,61 @@
     e.stopPropagation();
   }
 
-  function toggleCollapse() {
-    if (!initialized && dialogElement) {
-      const rect = dialogElement.getBoundingClientRect();
-      position.x = rect.left;
-      position.y = rect.top;
-      initialized = true;
+  /**
+   * Returns the viewport position closest to `x`/`y` that keeps the whole dialog inside the
+   * safe area. The backdrop's padding holds the safe-area insets, so it is read from there. When
+   * the dialog is larger than the safe area, the top-left corner wins so the title bar stays
+   * reachable.
+   */
+  function clampToSafeArea(x: number, y: number) {
+    const rect = dialogElement.getBoundingClientRect();
+    const insets = getComputedStyle(backdropElement);
+    const minX = Number.parseFloat(insets.paddingLeft) || 0;
+    const minY = Number.parseFloat(insets.paddingTop) || 0;
+    const maxX = window.innerWidth - (Number.parseFloat(insets.paddingRight) || 0) - rect.width;
+    const maxY = window.innerHeight - (Number.parseFloat(insets.paddingBottom) || 0) - rect.height;
+
+    return {
+      x: Math.max(minX, Math.min(x, maxX)),
+      y: Math.max(minY, Math.min(y, maxY))
+    };
+  }
+
+  /**
+   * Switches the dialog from being centred by the backdrop to being placed at explicit viewport
+   * coordinates, starting from where it is currently drawn.
+   */
+  function pinToCurrentPosition() {
+    if (initialized) {
+      return;
     }
+
+    const rect = dialogElement.getBoundingClientRect();
+    position = clampToSafeArea(rect.left, rect.top);
+    initialized = true;
+  }
+
+  async function toggleCollapse() {
+    if (!dialogElement) {
+      return;
+    }
+
+    pinToCurrentPosition();
     isCollapsed = !isCollapsed;
+
+    // Expanding a shaded dialog near the bottom edge would push its body out of view.
+    await tick();
+    if (dialogElement) {
+      position = clampToSafeArea(position.x, position.y);
+    }
+  }
+
+  function handleWindowResize() {
+    if (!initialized || !dialogElement) {
+      return;
+    }
+
+    position = clampToSafeArea(position.x, position.y);
   }
 
   function getEventPoint(event: MouseEvent | TouchEvent) {
@@ -72,20 +120,15 @@
       return;
     }
 
-    if ('touches' in event) {
-      event.preventDefault();
-    }
-
+    // No preventDefault() here: Svelte registers the title bar's touchstart listener as passive,
+    // so the call would be ignored with a console error. The draggable title bar sets
+    // `touch-action: none` to stop the page from scrolling instead.
     isDragging = true;
     const rect = dialogElement.getBoundingClientRect();
     dragOffset.x = pointer.x - rect.left;
     dragOffset.y = pointer.y - rect.top;
 
-    if (!initialized) {
-      position.x = rect.left;
-      position.y = rect.top;
-      initialized = true;
-    }
+    pinToCurrentPosition();
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleDragEnd);
@@ -104,20 +147,7 @@
       return;
     }
 
-    const rect = dialogElement.getBoundingClientRect();
-    const dialogWidth = rect.width;
-    const dialogHeight = rect.height;
-
-    const newX = pointer.x - dragOffset.x;
-    const newY = pointer.y - dragOffset.y;
-
-    const minX = 0;
-    const minY = 0;
-    const maxX = window.innerWidth - dialogWidth;
-    const maxY = window.innerHeight - dialogHeight;
-
-    position.x = Math.max(minX, Math.min(newX, maxX));
-    position.y = Math.max(minY, Math.min(newY, maxY));
+    position = clampToSafeArea(pointer.x - dragOffset.x, pointer.y - dragOffset.y);
   }
 
   function handleMouseMove(event: MouseEvent) {
@@ -158,7 +188,10 @@
   });
 </script>
 
+<svelte:window onresize={handleWindowResize} />
+
 <div
+  bind:this={backdropElement}
   class="s7-backdrop"
   onclick={close}
   onkeydown={(e) => {
@@ -172,6 +205,7 @@
     bind:this={dialogElement}
     class="s7-dialog"
     class:dragging={isDragging}
+    class:positioned={initialized}
     style="width: {width}; {initialized
       ? `position: fixed; left: ${position.x}px; top: ${position.y}px; transform: none;`
       : ''}"
@@ -210,6 +244,13 @@
     left: 0;
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
+    /* Keeps the dialog clear of the notch, status bar and gesture bar. The insets are 0 on
+       desktop, so the layout there is unchanged. */
+    padding: var(--system7-safe-area-top, env(safe-area-inset-top, 0px))
+      var(--system7-safe-area-right, env(safe-area-inset-right, 0px))
+      var(--system7-safe-area-bottom, env(safe-area-inset-bottom, 0px))
+      var(--system7-safe-area-left, env(safe-area-inset-left, 0px));
     background: var(--system7-overlay-strong, rgba(0, 0, 0, 0.2));
     display: flex;
     align-items: center;
@@ -221,6 +262,9 @@
     padding: 16px;
     display: flex;
     flex-direction: column;
+    /* Scrolls when the dialog is limited to the viewport height. */
+    min-height: 0;
+    overflow: auto;
   }
 
   .s7-dialog {
@@ -229,7 +273,24 @@
     box-shadow: 4px 4px 0 var(--system7-shadow-soft, rgba(0, 0, 0, 0.2));
     display: flex;
     flex-direction: column;
+    /* The width prop sizes the content box, so the limits subtract the 1px border on each side.
+       Inside the backdrop, 100% is the safe area. */
+    max-width: calc(100% - 2px);
+    max-height: calc(100% - 2px);
     outline: none;
+  }
+
+  /* Once dragged, the dialog is fixed to the viewport rather than laid out by the backdrop, so
+     100% is the whole viewport and the limits subtract the safe-area insets themselves. */
+  .s7-dialog.positioned {
+    max-width: calc(
+      100% - 2px - var(--system7-safe-area-left, env(safe-area-inset-left, 0px)) -
+        var(--system7-safe-area-right, env(safe-area-inset-right, 0px))
+    );
+    max-height: calc(
+      100% - 2px - var(--system7-safe-area-top, env(safe-area-inset-top, 0px)) -
+        var(--system7-safe-area-bottom, env(safe-area-inset-bottom, 0px))
+    );
   }
 
   .s7-dialog:focus {

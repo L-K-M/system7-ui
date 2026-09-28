@@ -23,15 +23,28 @@
   export let onclick: ((e: MouseEvent) => void) | undefined = undefined;
 </script>
 
+<!--
+  Other attributes (aria-*, data-*, name, value, form, event handlers such as onfocus) go to the
+  native <button>. They are spread first so the attributes written after them win: `class` stays
+  under the component's control and cannot drop its styling hooks.
+-->
 {#if variant === 'primary'}
   <div class="primary-border" class:disabled>
-    <button class="sys7-btn" {disabled} {title} {type} {onclick}>
+    <button {...$$restProps} class="sys7-btn" {disabled} {title} {type} {onclick}>
       <!-- @slot default - Button label text or icon content. -->
       <slot />
     </button>
   </div>
 {:else}
-  <button class="sys7-btn" class:icon-btn={variant === 'icon'} {disabled} {title} {type} {onclick}>
+  <button
+    {...$$restProps}
+    class="sys7-btn"
+    class:icon-btn={variant === 'icon'}
+    {disabled}
+    {title}
+    {type}
+    {onclick}
+  >
     <!-- @slot default - Button label text or icon content. -->
     <slot />
   </button>
@@ -80,8 +93,11 @@
     cursor: pointer;
   }
 
-  .icon-btn:hover {
-    opacity: 0.7;
+  /* Hover only where a pointer can hover, so a tap does not leave the button dimmed. */
+  @media (hover: hover) {
+    .icon-btn:hover {
+      opacity: 0.7;
+    }
   }
 
   .icon-btn:active {
@@ -92,5 +108,21 @@
     width: 16px;
     height: 16px;
     display: block;
+  }
+
+  /* Grows the touch target of icon buttons to at least 44px each way without changing the layout
+     or how the button looks. */
+  @media (pointer: coarse) {
+    .icon-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      min-width: 44px;
+      height: 100%;
+      min-height: 44px;
+      transform: translate(-50%, -50%);
+    }
   }
 </style>

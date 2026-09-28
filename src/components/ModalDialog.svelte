@@ -76,6 +76,13 @@
     left: 0;
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
+    /* Keeps the dialog clear of the notch, status bar and gesture bar. The insets are 0 on
+       desktop, so the layout there is unchanged. */
+    padding: var(--system7-safe-area-top, env(safe-area-inset-top, 0px))
+      var(--system7-safe-area-right, env(safe-area-inset-right, 0px))
+      var(--system7-safe-area-bottom, env(safe-area-inset-bottom, 0px))
+      var(--system7-safe-area-left, env(safe-area-inset-left, 0px));
     background: var(--system7-overlay-soft, rgba(0, 0, 0, 0.1));
     display: flex;
     align-items: center;
@@ -85,6 +92,12 @@
 
   .s7-fixed-dialog {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    /* The width prop sizes the content box, so the limits subtract the 32px frame on each side
+       and a narrow or short viewport shrinks the dialog instead of cutting off its frame. */
+    max-width: calc(100% - 64px);
+    max-height: calc(100% - 64px);
     background: var(--system7-color-paper, #fff);
     border: 32px solid transparent;
     border-image-slice: 32 fill;
@@ -97,6 +110,14 @@
   }
 
   .s7-dialog-content {
-    padding: 4px;
+    /* Scrolls when the content is taller than the viewport allows. Content such as the
+       ConfirmDialog button row reaches up to 10px past the 4px padding into the frame's white
+       inner band; the negative margin moves the scroll clip edge 12px into that band so the
+       overhang is neither clipped nor scrollable, while the padding keeps the content box
+       exactly where a 4px padding puts it. */
+    min-height: 0;
+    overflow: auto;
+    margin: -12px;
+    padding: 16px;
   }
 </style>

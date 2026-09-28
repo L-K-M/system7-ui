@@ -36,3 +36,25 @@ export const Markdown: Story = {
     ]
   }
 };
+
+/** Multi-line toasts stack without overlapping; long unbroken text wraps inside the toast. */
+export const LongMessages: Story = {
+  args: {
+    ondismiss: () => {},
+    notifications: [
+      { id: 1, type: 'success', message: 'Scan complete.' },
+      {
+        id: 2,
+        type: 'error',
+        message:
+          'Sync failed: the server at 192.168.1.5:3742 did not answer within 45 seconds. Check the address and try again.'
+      },
+      {
+        id: 3,
+        type: 'info',
+        message:
+          'Report saved to https://example.com/reports/2026/09/network-scan-with-a-very-long-name.html'
+      }
+    ]
+  }
+};

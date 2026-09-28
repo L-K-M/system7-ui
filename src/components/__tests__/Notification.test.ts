@@ -4,8 +4,8 @@ import { describe, expect, it, vi } from 'vitest';
 import Notification from '../Notification.svelte';
 
 describe('Notification', () => {
-  it('renders stacked status rows with expected offsets', () => {
-    render(Notification, {
+  it('renders every notification in one stack container, in list order', () => {
+    const { container } = render(Notification, {
       props: {
         notifications: [
           { id: 1, message: 'First notification', type: 'info' },
@@ -14,10 +14,21 @@ describe('Notification', () => {
       }
     });
 
+    const stacks = container.querySelectorAll('.notification-stack');
+    expect(stacks).toHaveLength(1);
+
     const statuses = screen.getAllByRole('status') as HTMLDivElement[];
     expect(statuses).toHaveLength(2);
-    expect(statuses[0].style.bottom).toBe('20px');
-    expect(statuses[1].style.bottom).toBe('90px');
+    expect(statuses.every((status) => status.parentElement === stacks[0])).toBe(true);
+    expect(statuses.map((status) => status.textContent?.trim())).toEqual([
+      'First notification',
+      'Second notification'
+    ]);
+
+    // The stack lays the toasts out, so a toast that wraps onto several lines cannot overlap the
+    // next one the way fixed per-toast offsets did.
+    expect(statuses[0].getAttribute('style')).toBeNull();
+    expect(statuses[1].getAttribute('style')).toBeNull();
   });
 
   it('renders errors as alerts and the rest as polite statuses', () => {

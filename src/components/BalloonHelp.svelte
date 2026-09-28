@@ -22,6 +22,11 @@
 
   let showBalloon = false;
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  // A tap also fires the compatibility mouseenter and, on focusable triggers, focusin. Help that
+  // opens from a tap has no hover to end it, so the last pointer type decides whether those
+  // events may open the balloon. It is cleared on any key press so keyboard focus still works.
+  let lastPointerType = '';
   let containerElement: HTMLDivElement;
   let balloonElement: HTMLDivElement;
   let adjustedPosition = position;
@@ -69,6 +74,18 @@
     }, delay);
   }
 
+  function recordPointerType(event: PointerEvent) {
+    lastPointerType = event.pointerType;
+  }
+
+  function scheduleShowUnlessTouch() {
+    if (lastPointerType === 'touch') {
+      return;
+    }
+
+    scheduleShow();
+  }
+
   function hide() {
     if (timeoutId) {
       clearTimeout(timeoutId);
@@ -86,6 +103,11 @@
       return;
     }
     hide();
+  }
+
+  // Capture phase, because dialogs stop keydown from bubbling to the window.
+  function forgetPointerType() {
+    lastPointerType = '';
   }
 
   function handleWindowKeydown(event: KeyboardEvent) {
@@ -200,15 +222,21 @@
   }
 </script>
 
-<svelte:window on:resize={handleWindowResize} on:keydown={handleWindowKeydown} />
+<svelte:window
+  on:resize={handleWindowResize}
+  on:keydown|capture={forgetPointerType}
+  on:keydown={handleWindowKeydown}
+/>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   class="balloon-container"
   bind:this={containerElement}
-  on:mouseenter={scheduleShow}
+  on:pointerenter={recordPointerType}
+  on:pointerdown={recordPointerType}
+  on:mouseenter={scheduleShowUnlessTouch}
   on:mouseleave={hide}
-  on:focusin={scheduleShow}
+  on:focusin={scheduleShowUnlessTouch}
   on:focusout={handleFocusOut}
 >
   <!-- @slot default - Trigger element that shows help text on hover. -->

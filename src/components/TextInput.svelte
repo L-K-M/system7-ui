@@ -46,6 +46,20 @@
 
   let inputElement: HTMLInputElement | null = null;
 
+  /**
+   * Moves keyboard focus to the input, for example to open the soft keyboard. Takes the standard
+   * `FocusOptions`, such as `{ preventScroll: true }`; the type is spelled via `Parameters` because
+   * ESLint's `no-undef` does not know DOM-only type names.
+   */
+  export function focus(options?: Parameters<HTMLInputElement['focus']>[0]) {
+    inputElement?.focus(options);
+  }
+
+  /** Selects the whole text of the input. */
+  export function select() {
+    inputElement?.select();
+  }
+
   function handleInput(e: Event) {
     const target = e.currentTarget as HTMLInputElement;
     value = target.value;
@@ -72,9 +86,19 @@
   $: showClear = clearable && value !== '' && !disabled && !readonly;
 </script>
 
+<!--
+  Other attributes (inputmode, enterkeyhint, autocapitalize, autocomplete, spellcheck, minlength,
+  aria-*, data-*, event handlers such as onfocus) go to the native <input>. They are spread first
+  so the attributes written after them win: `class` stays under the component's control, and the
+  `ariaLabel` prop takes precedence over an `aria-label` attribute. The value uses bind:value
+  because an element with a spread sets every attribute through one update that rewrites
+  input.value on each keystroke, which would stop minlength from ever reporting tooShort.
+-->
 <span class="sys7-text-input-wrap">
   <input
+    {...$$restProps}
     bind:this={inputElement}
+    bind:value
     class="sys7-text-input"
     class:has-clear={showClear}
     {type}
@@ -84,8 +108,7 @@
     {disabled}
     {readonly}
     {title}
-    aria-label={ariaLabel || undefined}
-    {value}
+    aria-label={ariaLabel || $$restProps['aria-label'] || undefined}
     oninput={handleInput}
     onchange={handleChange}
     {onkeydown}
@@ -176,5 +199,24 @@
 
   .clear-button svg {
     display: block;
+  }
+
+  /* Grows the clear box's touch target to 44px without changing how it looks. The target ends at
+     the field's right edge, and the text stops short of it, so a tap that places the caret near
+     the end of the text cannot clear the field by accident. */
+  @media (pointer: coarse) {
+    .sys7-text-input.has-clear {
+      padding-right: 44px;
+    }
+
+    .clear-button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -7px;
+      width: 44px;
+      height: 44px;
+      transform: translateY(-50%);
+    }
   }
 </style>

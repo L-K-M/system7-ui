@@ -20,3 +20,10 @@ export const Wide: Story = {
     width: '560px'
   }
 };
+
+/** Taller than most viewports: the frame stays inside the viewport and its content scrolls. */
+export const TallContent: Story = {
+  args: {
+    extraLines: 40
+  }
+};
