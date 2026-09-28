@@ -180,6 +180,7 @@ describe('MovableDialog placement', () => {
   it('cancels the touchmove that drags so the page does not scroll', () => {
     const { titleBar, dialog } = setup();
     stubDialogBox(dialog, { left: 30, top: 300, width: 300, height: 200 });
+    const addListener = vi.spyOn(document, 'addEventListener');
     const touchMove = createTouchLikeEvent('touchmove', 20, 110);
     const preventDefault = vi.spyOn(touchMove, 'preventDefault');
 
@@ -187,6 +188,12 @@ describe('MovableDialog placement', () => {
     document.dispatchEvent(touchMove);
 
     expect(preventDefault).toHaveBeenCalled();
+    // jsdom ignores `passive`, but browsers drop preventDefault from a passive listener.
+    expect(addListener).toHaveBeenCalledWith(
+      'touchmove',
+      expect.any(Function),
+      expect.objectContaining({ passive: false })
+    );
   });
 
   it('follows a touch drag from the title bar', async () => {
