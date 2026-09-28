@@ -177,6 +177,18 @@ describe('MovableDialog placement', () => {
     expect(preventDefault).not.toHaveBeenCalled();
   });
 
+  it('cancels the touchmove that drags so the page does not scroll', () => {
+    const { titleBar, dialog } = setup();
+    stubDialogBox(dialog, { left: 30, top: 300, width: 300, height: 200 });
+    const touchMove = createTouchLikeEvent('touchmove', 20, 110);
+    const preventDefault = vi.spyOn(touchMove, 'preventDefault');
+
+    titleBar.dispatchEvent(createTouchLikeEvent('touchstart', 40, 310));
+    document.dispatchEvent(touchMove);
+
+    expect(preventDefault).toHaveBeenCalled();
+  });
+
   it('follows a touch drag from the title bar', async () => {
     const { titleBar, dialog } = setup();
     stubDialogBox(dialog, { left: 30, top: 300, width: 300, height: 200 });

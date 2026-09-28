@@ -178,13 +178,14 @@ describe('TextInput', () => {
     expect(handleFocus).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps its own class when a class attribute is passed', () => {
+  it('keeps its own class and drops a passed class', () => {
     render(TextInput, {
       props: { ariaLabel: 'Name', class: 'app-field' }
     });
 
     const input = screen.getByRole('textbox', { name: 'Name' });
     expect(input.classList.contains('sys7-text-input')).toBe(true);
+    expect(input.classList.contains('app-field')).toBe(false);
   });
 
   it('uses an aria-label attribute when the ariaLabel prop is empty', () => {

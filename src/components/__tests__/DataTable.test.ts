@@ -57,7 +57,7 @@ describe('DataTable', () => {
     expect(onSort).toHaveBeenCalledWith('name');
   });
 
-  it('renders the header above a double rule by default', () => {
+  it('renders the header by default', () => {
     const { container } = render(DataTable, { props: { columns } });
 
     expect(container.querySelector('.s7-data-table-header-container')).not.toBeNull();
@@ -95,7 +95,7 @@ describe('DataTable', () => {
     const { css } = compile(dataTableSource, { css: 'external', filename: 'DataTable.svelte' });
 
     expect(css?.code).toMatch(
-      /table\.s7-data-table-table td \{[^}]*padding: var\(--system7-table-cell-padding, 5px 8px\);/
+      /table\.s7-data-table-table[^{]*td[^{]*\{[^}]*padding: var\(--system7-table-cell-padding, 5px 8px\);/
     );
     expect(css?.code).toMatch(
       /\.s7-data-table-body-container\.is-headless[^{]*\{\s*border-top: none;\s*margin-top: 0;/

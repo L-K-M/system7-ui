@@ -176,7 +176,7 @@
   <div class="right-side-buttons" class:has-actions={$$slots.actions}>
     {#if $$slots.actions}
       <div class="title-bar-actions" bind:this={actionsElement}>
-        <!-- @slot actions - Controls shown at the right end of the bar, before the zoom and shade boxes, vertically centred and drawn above the title. Pressing them never starts a window drag. The title is shortened to stay clear of them, and the bar keeps its 35px height, so keep content at most 34px tall. -->
+        <!-- @slot actions - Controls shown at the right end of the bar, before the zoom and shade boxes, vertically centred and drawn above the title. Pressing them never starts a window drag. The title is shortened to stay clear of them, and the bar keeps its 35px height, so keep content at most 34px tall. Keep it narrow too: once the actions and boxes take half the bar, no width is left for the centred title. -->
         <slot name="actions" />
       </div>
     {/if}

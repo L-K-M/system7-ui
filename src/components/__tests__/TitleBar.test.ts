@@ -141,10 +141,11 @@ describe('TitleBar actions slot', () => {
     vi.stubGlobal(
       'ResizeObserver',
       class {
-        constructor(callback: () => void) {
-          notifyResize = callback;
+        constructor(callback: ConstructorParameters<typeof ResizeObserver>[0]) {
+          notifyResize = () => callback([], this as unknown as ResizeObserver);
         }
         observe() {}
+        unobserve() {}
         disconnect() {}
       }
     );

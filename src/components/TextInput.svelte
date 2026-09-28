@@ -88,7 +88,8 @@
 
 <!--
   Other attributes (inputmode, enterkeyhint, autocapitalize, autocomplete, spellcheck, minlength,
-  aria-*, data-*, event handlers such as onfocus) go to the native <input>. They are spread first
+  aria-*, data-*, and event handlers such as onfocus) go to the native <input>. The component owns
+  oninput, onchange and onkeydown, so pass those as its props instead. They are spread first
   so the attributes written after them win: `class` stays under the component's control, and the
   `ariaLabel` prop takes precedence over an `aria-label` attribute. The value uses bind:value
   because an element with a spread sets every attribute through one update that rewrites

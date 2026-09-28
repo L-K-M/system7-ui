@@ -44,7 +44,9 @@
   /**
    * Renders the fixed header row when `true`. When `false`, the header container (including any
    * `header` slot content) is not rendered and the body starts without the double rule that
-   * separates it from the header. Column widths still come from `columns`.
+   * separates it from the header. Column widths still come from `columns`. Without a header,
+   * assistive technology gets no column names and sortable columns have no controls, so use it
+   * for tables whose columns are clear from context.
    */
   export let showHeader = true;
 

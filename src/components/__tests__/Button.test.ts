@@ -57,13 +57,14 @@ describe('Button', () => {
     expect(button.value).toBe('save');
   });
 
-  it('keeps its own attributes when conflicting attributes are passed', () => {
+  it('keeps its own class and drops a passed class', () => {
     render(Button, {
       props: { class: 'app-button', type: 'submit' }
     });
 
     const button = screen.getByRole('button') as HTMLButtonElement;
     expect(button.classList.contains('sys7-btn')).toBe(true);
+    expect(button.classList.contains('app-button')).toBe(false);
     expect(button.type).toBe('submit');
   });
 });
