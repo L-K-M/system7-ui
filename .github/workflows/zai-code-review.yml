@@ -96,7 +96,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}
           # Keep in step with the review step's timeout-minutes above.
-          REVIEW_BUDGET_MINUTES: "170"
+          REVIEW_BUDGET_MINUTES: '170'
         run: |
           set -euo pipefail
 
