@@ -26,11 +26,17 @@
     sortDirection = sortKey === key && sortDirection === 'asc' ? 'desc' : 'asc';
     sortKey = key;
   }
+
+  // DataTable only reports the sort; the rows arrive through its slot, so the story sorts them.
+  // Name is the only sortable column.
+  $: sortedRows = [...rows].sort((a, b) =>
+    sortDirection === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
+  );
 </script>
 
 <div class="s7-window-frame table-frame">
   <DataTable {columns} {showHeader} {loading} {empty} {sortKey} {sortDirection} onSort={handleSort}>
-    {#each rows as row (row.name)}
+    {#each sortedRows as row (row.name)}
       <tr>
         <td>{row.name}</td>
         <td>{row.kind}</td>
