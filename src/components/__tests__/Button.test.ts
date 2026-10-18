@@ -35,4 +35,37 @@ describe('Button', () => {
 
     expect(container.querySelector('.primary-border')).not.toBeNull();
   });
+
+  it('forwards other attributes to the native button', () => {
+    render(Button, {
+      props: { variant: 'icon', 'aria-label': 'Copy entry', 'data-entry-id': '42' }
+    });
+
+    const button = screen.getByRole('button', { name: 'Copy entry' });
+    expect(button.getAttribute('data-entry-id')).toBe('42');
+    expect(button.classList.contains('icon-btn')).toBe(true);
+  });
+
+  it('forwards other attributes to the native button of the primary variant', () => {
+    const { container } = render(Button, {
+      props: { variant: 'primary', 'aria-label': 'Save changes', name: 'intent', value: 'save' }
+    });
+
+    const button = screen.getByRole('button', { name: 'Save changes' }) as HTMLButtonElement;
+    expect(button.parentElement).toBe(container.querySelector('.primary-border'));
+    expect(button.name).toBe('intent');
+    expect(button.value).toBe('save');
+  });
+
+  it('keeps its own class and drops a passed class', () => {
+    render(Button, {
+      // @ts-expect-error `class` is not in the props type; this checks untyped callers too.
+      props: { class: 'app-button', type: 'submit' }
+    });
+
+    const button = screen.getByRole('button') as HTMLButtonElement;
+    expect(button.classList.contains('sys7-btn')).toBe(true);
+    expect(button.classList.contains('app-button')).toBe(false);
+    expect(button.type).toBe('submit');
+  });
 });
