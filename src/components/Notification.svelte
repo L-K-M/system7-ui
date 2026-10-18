@@ -39,44 +39,69 @@
   }
 </script>
 
-{#each notifications as notification, index (notification.id)}
-  <div
-    class="notification {notification.type}"
-    style="bottom: {20 + index * 70}px;"
-    role={notification.type === 'error' ? 'alert' : 'status'}
-  >
-    <div class="notification-content">
-      {#if markdown}
-        {@html renderMarkdown(notification.message)}
-      {:else}
-        {notification.message}
+<div class="notification-stack">
+  {#each notifications as notification (notification.id)}
+    <div
+      class="notification {notification.type}"
+      role={notification.type === 'error' ? 'alert' : 'status'}
+    >
+      <div class="notification-content">
+        {#if markdown}
+          {@html renderMarkdown(notification.message)}
+        {:else}
+          {notification.message}
+        {/if}
+      </div>
+      {#if ondismiss}
+        <button
+          type="button"
+          class="dismiss-button"
+          aria-label="Dismiss notification"
+          onclick={() => ondismiss?.(notification.id)}
+        >
+          <svg viewBox="0 0 10 10" width="10" height="10" focusable="false" aria-hidden="true">
+            <line x1="1" y1="1" x2="9" y2="9" stroke="currentColor" stroke-width="1.5" />
+            <line x1="9" y1="1" x2="1" y2="9" stroke="currentColor" stroke-width="1.5" />
+          </svg>
+        </button>
       {/if}
     </div>
-    {#if ondismiss}
-      <button
-        type="button"
-        class="dismiss-button"
-        aria-label="Dismiss notification"
-        onclick={() => ondismiss?.(notification.id)}
-      >
-        <svg viewBox="0 0 10 10" width="10" height="10" focusable="false" aria-hidden="true">
-          <line x1="1" y1="1" x2="9" y2="9" stroke="currentColor" stroke-width="1.5" />
-          <line x1="9" y1="1" x2="1" y2="9" stroke="currentColor" stroke-width="1.5" />
-        </svg>
-      </button>
-    {/if}
-  </div>
-{/each}
+  {/each}
+</div>
 
 <style>
-  .notification {
+  /* One fixed column holds every toast, so a toast that wraps onto several lines pushes the
+     later ones up instead of overlapping them. The first toast stays at the bottom. The stack
+     keeps the same margin on the left as on the right and each toast shrinks to fit inside it.
+     The 18px gap keeps the 70px pitch that single-line toasts had when each one was placed on
+     its own. */
+  .notification-stack {
     position: fixed;
-    right: 20px;
+    right: calc(
+      var(--system7-notification-offset-right, 20px) +
+        var(--system7-safe-area-right, env(safe-area-inset-right, 0px))
+    );
+    bottom: calc(
+      var(--system7-notification-offset-bottom, 20px) +
+        var(--system7-safe-area-bottom, env(safe-area-inset-bottom, 0px))
+    );
+    left: calc(
+      var(--system7-notification-offset-right, 20px) +
+        var(--system7-safe-area-left, env(safe-area-inset-left, 0px))
+    );
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    gap: 18px;
+    z-index: var(--system7-z-notification, 1000);
+    pointer-events: none;
+  }
+
+  .notification {
     display: flex;
     align-items: center;
     gap: 8px;
     max-width: 300px;
-    z-index: var(--system7-z-notification, 1000);
     pointer-events: none;
     animation: fadeIn 0.2s ease-in;
     border-radius: 10px;
@@ -101,6 +126,9 @@
   .notification-content {
     flex: 1;
     overflow-wrap: break-word;
+    /* With break-word alone, a long URL still sets this flex item's minimum width, so the text
+       ran out of the toast. Browsers without `anywhere` keep break-word. */
+    overflow-wrap: anywhere;
     hyphens: auto;
     white-space: pre-wrap;
   }
@@ -152,6 +180,23 @@
 
   .dismiss-button svg {
     display: block;
+  }
+
+  /* Grows the touch target to 44px without changing how the box looks. */
+  @media (pointer: coarse) {
+    .dismiss-button {
+      position: relative;
+    }
+
+    .dismiss-button::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 44px;
+      height: 44px;
+      transform: translate(-50%, -50%);
+    }
   }
 
   @keyframes fadeIn {
