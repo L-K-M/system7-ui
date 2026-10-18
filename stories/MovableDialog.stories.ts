@@ -22,3 +22,14 @@ export const Unfocused: Story = {
     focused: false
   }
 };
+
+/**
+ * Taller than most viewports: on a touch screen the dialog stays inside the viewport and its body
+ * scrolls. On desktop the dialog grows with its content.
+ */
+export const TallContent: Story = {
+  args: {
+    title: 'Settings',
+    extraLines: 40
+  }
+};
