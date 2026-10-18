@@ -139,4 +139,97 @@ describe('TextInput', () => {
 
     expect(screen.queryByRole('button', { name: 'Clear text' })).not.toBeNull();
   });
+
+  it('forwards other attributes to the native input', () => {
+    render(TextInput, {
+      props: {
+        ariaLabel: 'Search',
+        inputmode: 'search',
+        enterkeyhint: 'search',
+        autocapitalize: 'off',
+        autocomplete: 'off',
+        spellcheck: 'false',
+        minlength: 3,
+        'aria-describedby': 'search-hint',
+        'data-testid': 'search-field'
+      }
+    });
+
+    const input = screen.getByRole('textbox', { name: 'Search' });
+    expect(input.getAttribute('inputmode')).toBe('search');
+    expect(input.getAttribute('enterkeyhint')).toBe('search');
+    expect(input.getAttribute('autocapitalize')).toBe('off');
+    expect(input.getAttribute('autocomplete')).toBe('off');
+    expect(input.getAttribute('spellcheck')).toBe('false');
+    expect(input.getAttribute('minlength')).toBe('3');
+    expect(input.getAttribute('aria-describedby')).toBe('search-hint');
+    expect(input.getAttribute('data-testid')).toBe('search-field');
+  });
+
+  it('forwards event handler attributes to the native input', async () => {
+    const handleFocus = vi.fn();
+
+    render(TextInput, {
+      props: { ariaLabel: 'Name', onfocus: handleFocus }
+    });
+
+    await fireEvent.focus(screen.getByRole('textbox', { name: 'Name' }));
+
+    expect(handleFocus).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps its own class and drops a passed class', () => {
+    render(TextInput, {
+      // @ts-expect-error `class` is not in the props type; this checks untyped callers too.
+      props: { ariaLabel: 'Name', class: 'app-field' }
+    });
+
+    const input = screen.getByRole('textbox', { name: 'Name' });
+    expect(input.classList.contains('sys7-text-input')).toBe(true);
+    expect(input.classList.contains('app-field')).toBe(false);
+  });
+
+  it('uses an aria-label attribute when the ariaLabel prop is empty', () => {
+    render(TextInput, {
+      props: { 'aria-label': 'Filter entries' }
+    });
+
+    expect(screen.getByRole('textbox', { name: 'Filter entries' })).toBeTruthy();
+  });
+
+  it('prefers the ariaLabel prop over an aria-label attribute', () => {
+    render(TextInput, {
+      props: { ariaLabel: 'From prop', 'aria-label': 'From attribute' }
+    });
+
+    expect(screen.getByRole('textbox', { name: 'From prop' })).toBeTruthy();
+  });
+
+  it('keeps the bound value in sync when the parent changes it', async () => {
+    const { rerender } = render(TextInput, {
+      props: { ariaLabel: 'Name', value: 'Classic' }
+    });
+
+    const input = screen.getByRole('textbox', { name: 'Name' }) as HTMLInputElement;
+    expect(input.value).toBe('Classic');
+
+    await rerender({ value: 'Color Classic' });
+
+    expect(input.value).toBe('Color Classic');
+  });
+
+  it('exposes focus() and select() for the native input', () => {
+    const { component } = render(TextInput, {
+      props: { ariaLabel: 'Name', value: 'Performa' }
+    });
+
+    const input = screen.getByRole('textbox', { name: 'Name' }) as HTMLInputElement;
+
+    component.focus({ preventScroll: true });
+    expect(document.activeElement).toBe(input);
+
+    component.select();
+    expect(input.selectionStart).toBe(0);
+    expect(input.selectionEnd).toBe('Performa'.length);
+  });
 });
