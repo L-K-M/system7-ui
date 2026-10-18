@@ -20,3 +20,13 @@ export const Wide: Story = {
     width: '560px'
   }
 };
+
+/**
+ * Taller than most viewports: on a touch screen the frame stays inside the viewport and its content
+ * scrolls. On desktop the frame grows with its content.
+ */
+export const TallContent: Story = {
+  args: {
+    extraLines: 40
+  }
+};
